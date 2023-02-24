@@ -12,30 +12,36 @@ import {
   TextInput,
   TouchableOpacity
 } from 'react-native';
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { GoogleSignin, statusCodes, GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import database from '@react-native-firebase/database';
 
 GoogleSignin.configure({
   webClientId:
-  "799131600584-meg43op2tfh87lgd7hprk7ml1mkv9tev.apps.googleusercontent.com",
+    "799131600584-meg43op2tfh87lgd7hprk7ml1mkv9tev.apps.googleusercontent.com",
   forceCodeForRefreshToken: true
- });
+});
 
 const ScreenLogin = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  // const [userInfo, setUserInfo] = useState(null);
+  var [data, setData] = useState({});
   const prettyJson = (value) => {
     return JSON.stringify(value, null, 2);
   };
+  var [userInfo, setUserInfo] = useState(null)
   const signIn = async () => {
     try {
-    
       await GoogleSignin.hasPlayServices();
       await GoogleSignin.signOut();
       // await GoogleSignin.signIn();
-      const userInfo = await GoogleSignin.signIn();
-      console.log(userInfo)
-    }catch(error){
+      await GoogleSignin.signIn().then((res) => { setUserInfo(res) });
+      console.log(prettyJson(userInfo))
+      setData({
+        id: userInfo.user.id,
+        name: userInfo.user.name,
+        photo: userInfo.user.photo,
+        email: userInfo.user.email
+      });
+      database().ref("/user/" + data.id).set(data).then(() => console.log("Successful"))
+    } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow
         console.log("statusCodes.SIGN_IN_CANCELLED ", error)
@@ -49,104 +55,26 @@ const ScreenLogin = () => {
         // some other error happened
         // console.log("else" , error)
       }
-      console.log(error);
-    } 
+    }
   };
 
-
-
+  console.log(prettyJson(data));
   return (
     <SafeAreaView style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={{ paddingHorizontal: 25 }}>
+        <View>
           <View style={{ alignItems: 'center' }}>
             <Image
               style={styles.img}
               source={require('../assets/img/chatty.png')}
             />
           </View>
-          <Text style={styles.text}>Login</Text>
-
-          {/* Login */}
-          <View style={styles.input}>
-            <MaterialIcons
-              name="alternate-email"
-              size={20}
-              color="#666"
-              style={styles.icon}
-            />
-            <TextInput
-              placeholder="Email ID"
-              onChangeText={setEmail}
-              value={email}
-              keyboardType="email-address"
-              style={styles.textInput}
-            />
-          </View>
-
-          <View style={styles.input}>
-            <Ionicons
-              name="lock-closed-outline"
-              size={20}
-              color="#666"
-              style={styles.icon}
-            />
-            <TextInput
-              placeholder="Password"
-              onChangeText={setPassword}
-              value={password}
-              style={styles.textInput}
-              secureTextEntry={true}
-            />
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Forgot');
-              }}>
-              <Text style={styles.textForgot}>Forgot?</Text>
-            </TouchableOpacity>
-          </View>
-
-          <TouchableOpacity
-            onPress={() => {
-              login();
-            }}
-            style={styles.btnLogin}>
-            <Text style={styles.textLogin}>Login</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.textConnect}>Or, login with ...</Text>
-
-          {/* Connection */}
-          <View style={styles.connection}>
-            <TouchableOpacity onPress={() => { }}>
-              <Image
-                style={styles.imgConnect}
-                source={require('../assets/img/facebook.png')}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => { signIn() }}>
-              <Image
-                style={styles.imgConnect}
-                source={require('../assets/img/google.png')}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => { }}>
-              <Image
-                style={styles.imgConnect}
-                source={require('../assets/img/instagram.png')}
-              />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.connectRegister}>
-            <Text>New to the app?</Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Register');
-              }}>
-              <Text style={styles.textConnectRegister}> Register</Text>
-            </TouchableOpacity>
-          </View>
+          <Image source={{uri: userInfo.user.photo}}/>
+          <GoogleSigninButton
+            style={styles.GGButton}
+            size={GoogleSigninButton.Size.Wide}
+            color={GoogleSigninButton.Color.Dark}
+            onPress={() => signIn()} />
         </View>
       </TouchableWithoutFeedback>
     </SafeAreaView>
@@ -158,6 +86,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+  },
+
+  GGButton: {
+    height: 60,
+    alignSelf: "center"
   },
 
   img: {
