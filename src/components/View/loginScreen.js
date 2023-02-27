@@ -6,14 +6,12 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
   Image,
-  Text,
   StyleSheet,
-  Keyboard,
-  TextInput,
-  TouchableOpacity
+  Keyboard
 } from 'react-native';
 import { GoogleSignin, statusCodes, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import database from '@react-native-firebase/database';
+import { useNavigation } from '@react-navigation/native';
 
 GoogleSignin.configure({
   webClientId:
@@ -22,25 +20,25 @@ GoogleSignin.configure({
 });
 
 const ScreenLogin = () => {
-  var [data, setData] = useState({});
+  var navigation = useNavigation();
+  var [Success, setSucess] = useState(false)
   const prettyJson = (value) => {
     return JSON.stringify(value, null, 2);
   };
-  var [userInfo, setUserInfo] = useState(null)
   const signIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       await GoogleSignin.signOut();
-      // await GoogleSignin.signIn();
-      await GoogleSignin.signIn().then((res) => { setUserInfo(res) });
-      console.log(prettyJson(userInfo))
-      setData({
-        id: userInfo.user.id,
-        name: userInfo.user.name,
-        photo: userInfo.user.photo,
-        email: userInfo.user.email
-      });
-      database().ref("/user/" + data.id).set(data).then(() => console.log("Successful"))
+      const userInfo = await GoogleSignin.signIn()
+      const data = userInfo.user;
+      database().ref("/user/" + data.id).set(data).then(() => console.log("Succesful"));
+      navigation.navigate("Home",
+        {
+          id: data.id,
+          name: data.name,
+          photo: data.photo,
+          email: data.email
+        })
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow
@@ -58,7 +56,6 @@ const ScreenLogin = () => {
     }
   };
 
-  console.log(prettyJson(data));
   return (
     <SafeAreaView style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -69,12 +66,14 @@ const ScreenLogin = () => {
               source={require('../assets/img/chatty.png')}
             />
           </View>
-          <Image source={{uri: userInfo.user.photo}}/>
+          {/* <Image source={{uri: data.user.photo}}/> */}
           <GoogleSigninButton
             style={styles.GGButton}
             size={GoogleSigninButton.Size.Wide}
             color={GoogleSigninButton.Color.Dark}
-            onPress={() => signIn()} />
+            onPress={() =>
+              signIn()
+            } />
         </View>
       </TouchableWithoutFeedback>
     </SafeAreaView>
