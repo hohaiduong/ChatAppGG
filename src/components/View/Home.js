@@ -6,54 +6,62 @@ import {
 import database from '@react-native-firebase/database';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-const { width, height } = Dimensions.get("screen");
+const { width, height } = Dimensions.get("window");
 const HomeChat = ({ route }) => {
     var idUser = route.params.id;
-    var photo = route.params.photo;
-    var name = route.params.name;
+    var photoUser = route.params.photo;
+    var nameUser = route.params.name;
+    // var [roomID, setRoomID] = useState("")
     const [checkUser, setCheckUser] = useState(false);
     const [dataList, setDataList] = useState([]);
-
     const navigation = useNavigation();
 
     useEffect(() => {
         getChatList();
     }, [])
 
-    const getChatList = () => {
+    const getChatList = async () => {
         database()
             .ref('/chatlist/' + idUser)
             .on('value', snapshot => {
-                if (snapshot.val != null) {
+                if (snapshot.val() != null) {
                     setCheckUser(true)
                     setDataList(Object.values(snapshot.val()))
                 } else { setCheckUser(false) }
             });
     }
-
-
     const ItemList = ({ item }) => {
         const id = item.id;
-        const photo = item.photo;
+        const photoClient = item.photo;
         const Name = item.name;
+        const email = item.email;
         const lastMSG = item.lastMSG;
         const roomID = item.roomID;
+
         return (
             <SafeAreaView>
                 <TouchableOpacity onPress={() => {
-                    navigation.navigate("ChatRoom", {idUser: idUser, idClient: id, roomID: roomID})
+                    navigation.navigate("ChatRoom", {
+                        idUser: idUser,
+                        idClient: id,
+                        photoUser: photoUser,
+                        photoClient: photoClient,
+                        nameUser: nameUser,
+                        nameClient: email,
+                        roomID: roomID
+                    })
                 }}>
-                    <View>
-                        <Image
-                            style={{ width: 50, height: 50 }}
-                            source={{ uri: photo }}
-                        ></Image>
-                    </View>
-                    <View>
-                        <Text>{Name}</Text>
-                    </View>
-                    <View>
-                        <Text>{lastMSG}</Text>
+                    <View style={styles.container}>
+                        <View>
+                            <Image
+                                style={{ width: 50, height: 50 }}
+                                source={{ uri: photoClient }}
+                            ></Image>
+                        </View>
+                        <View style={styles.ViewText}>
+                            <Text>{Name}</Text>
+                            <Text>{lastMSG}</Text>
+                        </View>
                     </View>
                 </TouchableOpacity>
             </SafeAreaView>
@@ -65,20 +73,29 @@ const HomeChat = ({ route }) => {
                 <FlatList
                     data={dataList}
                     renderItem={ItemList}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item, index) => index}
                     showsVerticalScrollIndicator={false} />
             </View>
-            <TouchableOpacity style={styles.addChat}
-                onPress={() => {
-                    navigation.navigate("Search", { id: idUser, name: name, photo: photo });
-                }}>
-                <Ionicons
-                    name="add-outline"
-                    size={30}
-                    color="grey"
-                    style={styles.iconAdd}
-                />
-            </TouchableOpacity>
+            <View style={styles.viewButton}>
+                <TouchableOpacity
+                    style={styles.addChat}
+                    onPress={() => {
+                        navigation.navigate("Search",
+                            {
+                                id: idUser,
+                                nameUser: nameUser,
+                                photo: photoUser
+                            });
+                    }}>
+                    <Ionicons
+                        name="add-outline"
+                        size={30}
+                        color="grey"
+                        style={styles.iconAdd}
+                    />
+                </TouchableOpacity>
+            </View>
+
         </SafeAreaView>
     )
 };
@@ -89,12 +106,21 @@ const styles = StyleSheet.create({
         width: width,
         height: height
     },
+    iconAdd: {
+        color: "#FFF"
+    },
+    ViewText: {
+        marginLeft: 10
+    },
+    viewButton: {
+        height: height - 250,
+        justifyContent: "flex-end"
+    },
     container: {
         // backgroundColor: "#000",
         padding: 10,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
     },
     image: {
         width: 50,
@@ -104,15 +130,15 @@ const styles = StyleSheet.create({
     },
 
     addChat: {
+        color: "#FFF",
         width: 50,
         height: 50,
         position: "absolute",
         alignSelf: "flex-end",
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 550,
         borderRadius: 50,
-        backgroundColor: "#7FFF00"
+        backgroundColor: "#ad40af"
     }
 })
 
