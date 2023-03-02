@@ -1,18 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TextInput, TouchableOpacity, FlatList, Image, Alert } from 'react-native';
+import {
+    Text, View, TextInput, Pressable, FlatList, SafeAreaView, Keyboard,
+    StyleSheet, Image, Alert, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Platform
+} from 'react-native';
 import database from '@react-native-firebase/database';
-
+import Icon from 'react-native-vector-icons/SimpleLineIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import EmojiSelector from 'react-native-emoji-selector';
+const violet = '#ad40af';
+const orange = '#F8D548';
+const { width, height } = Dimensions.get("window")
 const ChatRoom = ({ route }) => {
     const idUser = route.params.idUser;
     const idClient = route.params.idClient;
     const roomID = route.params.roomID;
+    const nameClient = route.params.nameClient;
     const [mess, setMess] = useState("");
     const [allChat, setAllChat] = useState([]);
+    const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
 
     const ItemChat = ({ item }) => {
+        var messTo = item.to;
+        const isMe = messTo != idUser;
         const msg = item.msg;
         return (
-            <View>
+            <View style={[styles.messages,
+            isMe ? styles.rightContainer : styles.leftContainer
+            ]}>
                 <Text>{msg}</Text>
             </View>
         )
@@ -22,8 +37,7 @@ const ChatRoom = ({ route }) => {
         const onChildAdd = database()
             .ref('/messages/' + roomID)
             .on('child_added', snapshot => {
-                console.log('A new node has been added', snapshot.val());
-                setAllChat((state) => [...state, snapshot.val()])
+                setAllChat((state) => [snapshot.val(), ...state])
             });
 
         // Stop listening for updates when no longer required
@@ -41,7 +55,6 @@ const ChatRoom = ({ route }) => {
             }
             const newReference = database().ref('/messages/' + roomID).push();
 
-            console.log('Auto generated key: ', newReference.key);
             msgData.id = newReference.key;
 
             newReference
@@ -53,41 +66,164 @@ const ChatRoom = ({ route }) => {
                     database()
                         .ref('/chatlist/' + idClient + "/" + idUser)
                         .update(chatListUpdate)
-                        .then(() => console.log("Success"));
-                 
+
                     database()
                         .ref('/chatlist/' + idUser + "/" + idClient)
-                        .update(chatListUpdate )
-                        .then(() => console.log("Success"));
+                        .update(chatListUpdate)
                 });
         } else {
             Alert.alert("Error")
         }
     }
     return (
-        <View>
-          
-            <View>
-                <TextInput
-                    placeholder='messages here'
-                    value={mess}
-                    onChangeText={setMess}
-
+        <SafeAreaView style={{ flex: 1 }}>
+            <View style={[styles.list, { flex: 1 }]}>
+                <FlatList
+                    data={allChat}
+                    keyExtractor={(item, index) => index}
+                    renderItem={ItemChat}
+                    scrollEnabled={true}
+                    inverted
+                    showsVerticalScrollIndicator={false}
                 />
             </View>
-            <View>
-                <TouchableOpacity onPress={() => sendMSG()}>
-                    <Text>Send</Text>
-                </TouchableOpacity>
-            </View>
-            <FlatList
-                data={allChat}
-                keyExtractor={(item, index) => index}
-                inverted
-                renderItem={ItemChat}
-            />
-        </View>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={[styles.root, { height: isEmojiPickerOpen ? '60%' : 'auto' }]}
+                keyboardVerticalOffset={100}>
+
+                <View style={styles.row}>
+                    <View style={styles.inputContainer}>
+                        <Pressable
+                            onPress={() => [
+                                setIsEmojiPickerOpen(currentValue => !currentValue),
+                                Keyboard.dismiss(),
+                            ]}>
+                            <Icon
+                                name="emotsmile"
+                                size={24}
+                                color="grey"
+                                style={styles.iconEmoji}
+                            />
+                        </Pressable>
+
+                        <TextInput
+                            keyboardAppearance='default'
+                            keyboardType='default'
+                            style={styles.input}
+                            value={mess}
+                            onChangeText={setMess}
+                            placeholder="Signal message..."
+                        />
+                        <Icon
+                            name="microphone"
+                            size={24}
+                            color="grey"
+                            style={styles.iconMicro}
+                        />
+                    </View>
+
+                    <Pressable onPress={() => { mess ? [sendMSG(), setMess("")] : console.log("Khong co van ban"); }} style={styles.buttonContainer}>
+                        {mess ? (
+                            <Ionicons name="send-sharp" size={18} color="#fff" />
+                        ) : (
+                            <AntDesign name="plus" size={24} color="#fff" />
+                        )}
+                    </Pressable>
+                </View>
+
+                {isEmojiPickerOpen && (
+                    <EmojiSelector
+                        onEmojiSelected={emoji =>
+                            setMess(currentMessage => currentMessage + emoji)
+                        }
+                        columns={8}
+                        showSearchBar={false}
+                    />
+                )}
+
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     )
 }
+
+const styles = StyleSheet.create({
+    messages: {
+        padding: 10,
+        margin: 10,
+        borderRadius: 10,
+        maxWidth: '70%',
+    },
+
+    containerSendMess: {
+        alignItems: "center",
+        flexDirection: "row"
+    },
+    leftContainer: {
+        backgroundColor: orange,
+        marginLeft: 10,
+        marginRight: 'auto',
+    },
+
+    rightContainer: {
+        backgroundColor: violet,
+        marginLeft: 'auto',
+        marginRight: 10,
+    },
+
+    list: {
+        height: height - 100,
+
+    },
+
+    root: {
+        padding: 10,
+        height: '60%',
+    },
+
+    row: {
+        flexDirection: 'row',
+    },
+
+    inputContainer: {
+        backgroundColor: '#f2f2f2',
+        flex: 1,
+        borderWidth: 1,
+        borderColor: 'lightgrey',
+        marginRight: 10,
+        borderRadius: 25,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    iconEmoji: {
+        marginHorizontal: 15,
+    },
+
+    input: {
+        flex: 1,
+    },
+
+    iconMicro: {
+        marginRight: 15,
+    },
+
+    buttonContainer: {
+        width: 40,
+        height: 40,
+        backgroundColor: '#ad40af',
+        borderRadius: 25,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 5,
+    },
+
+    container: {
+        padding: 10,
+        margin: 10,
+        borderRadius: 10,
+        maxWidth: '70%',
+    },
+});
 
 export default ChatRoom;

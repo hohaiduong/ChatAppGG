@@ -11,13 +11,13 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const { width, height } = Dimensions.get("screen");
 
 const AddChat = ({ route }) => {
-    var { id, name, photo } = route.params;
+    var { id, nameUser, photo} = route.params;
+    roomID = Math.floor(Math.random() * 999999999999);
     const [allUser, setAllUser] = useState([])
     const [allUserBackup, setAllUserBackup] = useState([])
     const [search, setSearch] = useState("");
     const navigation = useNavigation();
-    const roomID = Math.floor(Math.random() * 999999999999);
-    var photoClient = "";
+    console.log(photo);
     useEffect(() => {
         getAllUser()
     }, [])
@@ -38,44 +38,50 @@ const AddChat = ({ route }) => {
         setAllUser(allUserBackup.filter((it) => it.name.match(val)))
     }
 
-    const createChat = (data) => {
+    const addChat = (data) => {
         let myData = {
             roomID,
             id: id,
-            name: name,
             photo: photo,
-            lastMSG:""
+            name: nameUser,
+            lastMSG: "",
+            
         }
         database()
             .ref('/chatlist/' + data.id + "/" + id)
             .update(myData)
             .then(() => console.log("Success"));
-        data.lastMSG = "";
+
+        data.lastMSG= "";
         data.roomID = roomID;
 
         database()
             .ref('/chatlist/' + id + "/" + data.id)
             .update(data)
             .then(() => console.log("Success"));
-
-        navigation.navigate("ChatRoom", { idUser: id, idClient: data.id, roomID: data.roomID})
+        navigation.navigate("ChatRoom", {
+            idUser: id, idClient: data.id,
+            photoUser: photo, photoClient: data.photo, 
+            nameUser: nameUser, nameClient: data.name, 
+            roomID: roomID
+        })
     }
 
     const ItemList = ({ item }) => {
-        const id = item.id
-        photo = item.photo;
         const name = item.name;
+        photoClient = item.photo;
+        nameClient = item.name;
         return (
             <View style={{
                 borderTopWidth: 1,
                 borderTopColor: "#A9A9A9"
             }}>
                 <TouchableOpacity style={styles.list}
-                    onPress={() => { [createChat(item)] }}
+                    onPress={() => { addChat(item) }}
                 >
                     <Image
                         style={styles.image}
-                        source={{ uri: photo }}
+                        source={{ uri: photoClient }}
                     />
                     <Text style={styles.text}>{name}</Text>
                 </TouchableOpacity>
@@ -100,7 +106,7 @@ const AddChat = ({ route }) => {
                 //   style={styles.textInput}
                 />
                 <View style={styles.viewCancel}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => {navigation.goBack()}}>
                         <Text style={styles.textCancel}>Cancel</Text>
                     </TouchableOpacity>
                 </View>
