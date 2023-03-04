@@ -8,6 +8,8 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EmojiSelector from 'react-native-emoji-selector';
+import { useNavigation } from '@react-navigation/native';
+// import Moment from 'react-moment';
 const violet = '#ad40af';
 const orange = '#F8D548';
 const { width, height } = Dimensions.get("window")
@@ -16,9 +18,24 @@ const ChatRoom = ({ route }) => {
     const idClient = route.params.idClient;
     const roomID = route.params.roomID;
     const nameClient = route.params.nameClient;
+    const photoClient = route.params.photoClient;
     const [mess, setMess] = useState("");
     const [allChat, setAllChat] = useState([]);
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
+
+    const navigation = useNavigation();
+
+    navigation.setOptions(
+        {
+            headerTitle: () => (
+                <View style={styles.viewTitle}>
+                    <Image style={styles.imgTitle} source={{ uri: photoClient }} />
+                    <Text style={styles.TextTitle}>{nameClient}</Text>
+                </View>
+            )
+        } 
+    )
+    // navigation.setOptions()
 
     const ItemChat = ({ item }) => {
         var messTo = item.to;
@@ -76,7 +93,7 @@ const ChatRoom = ({ route }) => {
         }
     }
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#FFDEAD" }}>
             <View style={[styles.list, { flex: 1 }]}>
                 <FlatList
                     data={allChat}
@@ -113,7 +130,7 @@ const ChatRoom = ({ route }) => {
                             style={styles.input}
                             value={mess}
                             onChangeText={setMess}
-                            placeholder="Signal message..."
+                            placeholder="Type your message..."
                         />
                         <Icon
                             name="microphone"
@@ -148,6 +165,22 @@ const ChatRoom = ({ route }) => {
 }
 
 const styles = StyleSheet.create({
+    viewTitle: {
+        flexDirection: "row",
+        alignItems: "center"
+    },
+    imgTitle: {
+        width: 40,
+        height: 40,
+        borderRadius: 50
+    },
+    TextTitle: {
+        marginLeft: 10,
+        fontFamily: "Arial",
+        fontWeight: "700",
+        color: "black",
+        fontSize: 20
+    },
     messages: {
         padding: 10,
         margin: 10,

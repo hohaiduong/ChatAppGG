@@ -6,30 +6,37 @@ import {
 import database from '@react-native-firebase/database';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+import Auth from '../service/Auth';
+
 const { width, height } = Dimensions.get("window");
 const HomeChat = ({ route }) => {
-    var idUser = route.params.id;
-    var photoUser = route.params.photo;
-    var nameUser = route.params.name;
-    // var [roomID, setRoomID] = useState("")
+    useEffect(() => {
+        getUser()
+        getChatList()
+    }, [data])
+
+    const [data, setData] = useState([]);
+     const getUser = async() =>{
+        setData(await Auth.getAccount());
+    }
+    var idUser = data.id;
+    console.log(idUser);
+    var photoUser = data.photo;
+    var nameUser = data.name;
     const [checkUser, setCheckUser] = useState(false);
     const [dataList, setDataList] = useState([]);
     const navigation = useNavigation();
-
-    useEffect(() => {
-        getChatList();
-    }, [])
-
+    navigation.setOptions({ title: "Messages" })
     const getChatList = async () => {
         database()
             .ref('/chatlist/' + idUser)
             .on('value', snapshot => {
                 if (snapshot.val() != null) {
-                    setCheckUser(true)
                     setDataList(Object.values(snapshot.val()))
                 } else { setCheckUser(false) }
             });
     }
+
     const ItemList = ({ item }) => {
         const id = item.id;
         const photoClient = item.photo;
@@ -47,20 +54,20 @@ const HomeChat = ({ route }) => {
                         photoUser: photoUser,
                         photoClient: photoClient,
                         nameUser: nameUser,
-                        nameClient: email,
+                        nameClient: Name,
                         roomID: roomID
                     })
                 }}>
                     <View style={styles.container}>
                         <View>
                             <Image
-                                style={{ width: 50, height: 50 }}
+                                style={styles.image}
                                 source={{ uri: photoClient }}
                             ></Image>
                         </View>
                         <View style={styles.ViewText}>
-                            <Text>{Name}</Text>
-                            <Text>{lastMSG}</Text>
+                            <Text style={styles.textName}>{Name}</Text>
+                            <Text style={styles.textMSG} numberOfLines= {1} >{lastMSG}</Text>
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -110,14 +117,20 @@ const styles = StyleSheet.create({
         color: "#FFF"
     },
     ViewText: {
-        marginLeft: 10
+        marginLeft: 10,
+        marginRight: 68
     },
     viewButton: {
-        height: height - 250,
+        height: height - 300,
         justifyContent: "flex-end"
     },
     container: {
-        // backgroundColor: "#000",
+        width: width - 30,
+        alignSelf: "center",
+        marginTop: 5,
+        borderBottomLeftRadius: 25,
+        borderBottomRightRadius: 25,
+        backgroundColor: "#F5f5f5",
         padding: 10,
         flexDirection: 'row',
         alignItems: 'center',
@@ -139,6 +152,19 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderRadius: 50,
         backgroundColor: "#ad40af"
+    },
+    textName: {
+        fontSize: 17,
+        fontWeight: "bold",
+        color: "black",
+        fontFamily: "normal"
+    },
+
+    textMSG: {
+        fontSize: 15,
+        fontWeight: "500",
+        color: "black",
+        fontFamily: "normal"
     }
 })
 

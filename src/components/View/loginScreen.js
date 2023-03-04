@@ -12,7 +12,7 @@ import {
 import { GoogleSignin, statusCodes, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import database from '@react-native-firebase/database';
 import { useNavigation } from '@react-navigation/native';
-
+import Auth from '../service/Auth';
 GoogleSignin.configure({
   webClientId:
     "799131600584-meg43op2tfh87lgd7hprk7ml1mkv9tev.apps.googleusercontent.com",
@@ -21,24 +21,29 @@ GoogleSignin.configure({
 
 const ScreenLogin = () => {
   var navigation = useNavigation();
+  var [data, setData] = useState([])
   var [Success, setSucess] = useState(false)
   const prettyJson = (value) => {
     return JSON.stringify(value, null, 2);
-  };
+  }; 
+  useEffect(() => {
+    getData()
+  }, [])
+  const getData = async() => {
+    setData = await Auth.getAccount();
+  }
+
   const signIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       await GoogleSignin.signOut();
       const userInfo = await GoogleSignin.signIn()
-      const data = userInfo.user;
-      database().ref("/user/" + data.id).set(data).then(() => console.log("Succesful"));
-      navigation.navigate("Home",
-        {
-          id: data.id,
-          name: data.name,
-          photo: data.photo,
-          email: data.email
-        })
+      await Auth.setAccount(userInfo.user)
+      // console.log("data2", data.id);
+      database().ref("/user/" + data.id)
+      .set(data)
+      .then(()=> console.log("Succesful"));
+      navigation.replace("Home")
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow
@@ -66,7 +71,6 @@ const ScreenLogin = () => {
               source={require('../assets/img/chatty.png')}
             />
           </View>
-          {/* <Image source={{uri: data.user.photo}}/> */}
           <GoogleSigninButton
             style={styles.GGButton}
             size={GoogleSigninButton.Size.Wide}
