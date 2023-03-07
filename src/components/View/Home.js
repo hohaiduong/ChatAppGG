@@ -9,24 +9,34 @@ import { useNavigation } from '@react-navigation/native';
 import Auth from '../service/Auth';
 
 const { width, height } = Dimensions.get("window");
-const HomeChat = ({ route }) => {
+const HomeChat = () => {
+    const [data, setData] = useState([]);
     useEffect(() => {
         getUser()
         getChatList()
     }, [data])
 
-    const [data, setData] = useState([]);
-     const getUser = async() =>{
+    const getUser = async () => {
         setData(await Auth.getAccount());
     }
+    
     var idUser = data.id;
-    console.log(idUser);
     var photoUser = data.photo;
     var nameUser = data.name;
+    var email = data.email;
     const [checkUser, setCheckUser] = useState(false);
     const [dataList, setDataList] = useState([]);
     const navigation = useNavigation();
-    navigation.setOptions({ title: "Messages" })
+    navigation.setOptions({
+        headerTitle: () => (
+            <View style= {styles.viewTitle}>
+                <Text style={styles.TextTitle}>Messages</Text>
+                <TouchableOpacity onPress={ () => [Auth.logout(), navigation.replace("Login")]}>
+                    <Ionicons name="log-out-outline" style={styles.settingIcon}></Ionicons>
+                </TouchableOpacity>
+            </View>
+        )
+    })
     const getChatList = async () => {
         database()
             .ref('/chatlist/' + idUser)
@@ -41,7 +51,6 @@ const HomeChat = ({ route }) => {
         const id = item.id;
         const photoClient = item.photo;
         const Name = item.name;
-        const email = item.email;
         const lastMSG = item.lastMSG;
         const roomID = item.roomID;
 
@@ -67,7 +76,7 @@ const HomeChat = ({ route }) => {
                         </View>
                         <View style={styles.ViewText}>
                             <Text style={styles.textName}>{Name}</Text>
-                            <Text style={styles.textMSG} numberOfLines= {1} >{lastMSG}</Text>
+                            <Text style={styles.textMSG} numberOfLines={1} >{lastMSG}</Text>
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -76,7 +85,7 @@ const HomeChat = ({ route }) => {
     }
     return (
         <SafeAreaView style={styles.safeView}>
-            <View>
+            <View style={styles.viewChatList}>
                 <FlatList
                     data={dataList}
                     renderItem={ItemList}
@@ -108,10 +117,29 @@ const HomeChat = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+    viewTitle: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: width - 40
+    },
+    TextTitle: {
+        marginLeft: 10,
+        fontFamily: "Arial",
+        fontWeight: "700",
+        color: "black",
+        fontSize: 20
+    },
+    settingIcon: {
+        color: "black",
+        fontSize: 25,
+    },
     safeView: {
         backgroundColor: "#fff",
         width: width,
         height: height
+    },
+    viewChatList: {
+        height:height - 100
     },
     iconAdd: {
         color: "#FFF"
@@ -121,8 +149,7 @@ const styles = StyleSheet.create({
         marginRight: 68
     },
     viewButton: {
-        height: height - 300,
-        justifyContent: "flex-end"
+        justifyContent: "flex-end",
     },
     container: {
         width: width - 30,

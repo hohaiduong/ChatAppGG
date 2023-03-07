@@ -8,25 +8,11 @@ import HomeChat from '../View/Home';
 import AddChat from '../View/AddChat';
 import ChatRoom from '../View/ChatRoom';
 import Auth from '../service/Auth';
+import { NavigationContainer } from '@react-navigation/native';
 // import { Image } from 'react-native/Libraries/Image/Image';
 const Stack = createNativeStackNavigator();
-const StackNavigation = () => {
 
-    const [loginCheck, setLoginCheck] = useState(false)
-    useEffect(() => {
-        getLogin()
-    }, [loginCheck])
-
-    
-    const getLogin = async () => {
-        const login = await Auth.getAccount();
-        await Auth.setAccount(login)
-        if (login != null) { 
-            setLoginCheck(true)
-        } else {
-            setLoginCheck(false)
-        }
-    }
+const LoginStack = () => {
     return (
         <Stack.Navigator screenOptions={{
             headerStyle: {
@@ -34,12 +20,54 @@ const StackNavigation = () => {
                 backgroundColor: "#F8D548"
             }
         }}>
-            {loginCheck == false ?
-                <Stack.Screen name='Login' component={ScreenLogin}/> :
-                <Stack.Screen name='Home' component={HomeChat}/>
-            }
+            <Stack.Screen name='Login' component={ScreenLogin} />
+            <Stack.Screen name='Home' component={HomeChat} />
             <Stack.Screen name='Search' component={AddChat}></Stack.Screen>
             <Stack.Screen name='ChatRoom' component={ChatRoom}></Stack.Screen>
+        </Stack.Navigator>
+    )
+}
+
+
+const HomeStack = () => {
+    return (
+        <Stack.Navigator screenOptions={{
+            headerStyle: {
+                height: 150,
+                backgroundColor: "#F8D548"
+            }
+        }}>
+            <Stack.Screen name='Home' component={HomeChat} />
+            <Stack.Screen name='Login' component={ScreenLogin} />
+            <Stack.Screen name='Search' component={AddChat}></Stack.Screen>
+            <Stack.Screen name='ChatRoom' component={ChatRoom}></Stack.Screen>
+        </Stack.Navigator>
+    )
+}
+const StackNavigation = () => {
+    const [Login, setLogin] = useState(true)
+    useEffect(() => {
+        getLogin()
+    }, [Login])
+
+
+    const getLogin = async () => {
+        let login = await Auth.getAccount();
+        if (login != null) {
+            await Auth.setAccount(login)
+            setLogin(false)
+        }else{
+            setLogin(true)
+        }
+    }
+
+    return (
+        <Stack.Navigator>
+            {Login ?
+                <Stack.Screen name="LoginStack" component={LoginStack} options={{ headerShown: false }} /> :
+                <Stack.Screen name="HomeStack" component={HomeStack} options={{ headerShown: false }} />
+
+            }
         </Stack.Navigator>
     )
 }
