@@ -42,8 +42,11 @@ const ScreenLogin = () => {
       // console.log("data2", data.id);
       database().ref("/user/" + data.id)
       .set(data)
-      .then(()=> console.log("Succesful"));
-      navigation.replace("Home")
+      .then(()=> {
+      console.log("Succesful"),
+      navigation.replace("Home")}
+      );
+      
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow

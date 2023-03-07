@@ -59,7 +59,7 @@ const ChatRoom = ({ route }) => {
 
         // Stop listening for updates when no longer required
         return () => database().ref('/messages/' + roomID).off('child_added', onChildAdd);
-    }, [roomID]);
+    }, []);
 
     const sendMSG = () => {
         if (mess !== "") {
@@ -105,9 +105,8 @@ const ChatRoom = ({ route }) => {
                 />
             </View>
             <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={[styles.root, { height: isEmojiPickerOpen ? '60%' : 'auto' }]}
-                keyboardVerticalOffset={100}>
+                keyboardVerticalOffset={50}>
 
                 <View style={styles.row}>
                     <View style={styles.inputContainer}>
@@ -140,7 +139,7 @@ const ChatRoom = ({ route }) => {
                         />
                     </View>
 
-                    <Pressable onPress={() => { mess ? [sendMSG(), setMess("")] : console.log("Khong co van ban"); }} style={styles.buttonContainer}>
+                    <Pressable onPress={() => { mess ? [sendMSG(), setMess(""), setIsEmojiPickerOpen(false), Keyboard.dismiss()] : console.log("Khong co van ban"); }} style={styles.buttonContainer}>
                         {mess ? (
                             <Ionicons name="send-sharp" size={18} color="#fff" />
                         ) : (
