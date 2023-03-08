@@ -9,10 +9,11 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EmojiSelector from 'react-native-emoji-selector';
 import { useNavigation } from '@react-navigation/native';
-// import Moment from 'react-moment';
-const violet = '#ad40af';
-const orange = '#F8D548';
-const { width, height } = Dimensions.get("window")
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+
+import styles from '../Styles/ChatRoomStyle';
+
+
 const ChatRoom = ({ route }) => {
     const idUser = route.params.idUser;
     const idClient = route.params.idClient;
@@ -33,7 +34,7 @@ const ChatRoom = ({ route }) => {
                     <Text style={styles.TextTitle}>{nameClient}</Text>
                 </View>
             )
-        } 
+        }
     )
     // navigation.setOptions()
 
@@ -41,11 +42,24 @@ const ChatRoom = ({ route }) => {
         var messTo = item.to;
         const isMe = messTo != idUser;
         const msg = item.msg;
+        const msgType = item.msgType;
+        const base64 = 'data:image/png;base64,' + msg;
         return (
-            <View style={[styles.messages,
-            isMe ? styles.rightContainer : styles.leftContainer
-            ]}>
-                <Text>{msg}</Text>
+            <View>
+                {msgType == "text" ?
+                    <View style={[styles.messages,
+                    isMe ? styles.rightContainer : styles.leftContainer
+                    ]}>
+                        <Text>{msg}</Text>
+                    </View> :
+
+                    <View style={[
+                        isMe ? styles.imgRightContainer : styles.imgLeftContainer
+                    ]}>
+                        <Image source={{ uri: base64 }} style={styles.imgMessages}></Image>
+
+                    </View>
+                }
             </View>
         )
     }
@@ -67,7 +81,8 @@ const ChatRoom = ({ route }) => {
                 roomID: roomID,
                 msg: mess,
                 from: idUser,
-                to: idClient
+                to: idClient,
+                msgType: "text"
                 // sendTime: moment().fomart()
             }
             const newReference = database().ref('/messages/' + roomID).push();
@@ -91,6 +106,55 @@ const ChatRoom = ({ route }) => {
         } else {
             Alert.alert("Error")
         }
+    }
+
+    const openCamera = () => {
+        const options = {
+            storageOptions: {
+              path: 'images',
+              mediaType: 'photo',
+            },
+            includeBase64: true,
+          };
+          launchCamera(options, response => {
+            console.log('response', response);
+          });
+    }
+
+    const openImageLib = async () => {
+        const options = {
+            selectionLimit: 1,
+            mediaType: 'photo',
+            quality: 1,
+            includeBase64: true,
+        };
+        const images = await launchImageLibrary(options);
+        let msgData = {
+            roomID: roomID,
+            msg: images.assets[0].base64,
+            from: idUser,
+            to: idClient,
+            msgType: "image"
+            // sendTime: moment().fomart()
+        }
+        const newReference = database().ref('/messages/' + roomID).push();
+
+        msgData.id = newReference.key;
+
+        newReference
+            .set(msgData)
+            .then(() => {
+                let chatListUpdate = {
+                    lastMSG: "Đã gửi một hình ảnh"
+                }
+                database()
+                    .ref('/chatlist/' + idClient + "/" + idUser)
+                    .update(chatListUpdate)
+
+                database()
+                    .ref('/chatlist/' + idUser + "/" + idClient)
+                    .update(chatListUpdate)
+            });
     }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#FFDEAD" }}>
@@ -131,19 +195,21 @@ const ChatRoom = ({ route }) => {
                             onChangeText={setMess}
                             placeholder="Type your message..."
                         />
-                        <Icon
-                            name="microphone"
-                            size={24}
-                            color="grey"
-                            style={styles.iconMicro}
-                        />
+                        <Pressable onPress={() => openImageLib()}>
+                            <Ionicons
+                                name="image-outline"
+                                size={24}
+                                color="grey"
+                                style={styles.iconMicro}
+                            />
+                        </Pressable>
                     </View>
 
-                    <Pressable onPress={() => { mess ? [sendMSG(), setMess(""), setIsEmojiPickerOpen(false), Keyboard.dismiss()] : console.log("Khong co van ban"); }} style={styles.buttonContainer}>
+                    <Pressable onPress={() => { mess ? [sendMSG(), setMess(""), setIsEmojiPickerOpen(false), Keyboard.dismiss()] : openCamera() }} style={styles.buttonContainer}>
                         {mess ? (
                             <Ionicons name="send-sharp" size={18} color="#fff" />
                         ) : (
-                            <AntDesign name="plus" size={24} color="#fff" />
+                            <Ionicons name="camera-outline" size={24} color="#fff" />
                         )}
                     </Pressable>
                 </View>
@@ -163,99 +229,5 @@ const ChatRoom = ({ route }) => {
     )
 }
 
-const styles = StyleSheet.create({
-    viewTitle: {
-        flexDirection: "row",
-        alignItems: "center"
-    },
-    imgTitle: {
-        width: 40,
-        height: 40,
-        borderRadius: 50
-    },
-    TextTitle: {
-        marginLeft: 10,
-        fontFamily: "Arial",
-        fontWeight: "700",
-        color: "black",
-        fontSize: 20
-    },
-    messages: {
-        padding: 10,
-        margin: 10,
-        borderRadius: 10,
-        maxWidth: '70%',
-    },
-
-    containerSendMess: {
-        alignItems: "center",
-        flexDirection: "row"
-    },
-    leftContainer: {
-        backgroundColor: orange,
-        marginLeft: 10,
-        marginRight: 'auto',
-    },
-
-    rightContainer: {
-        backgroundColor: violet,
-        marginLeft: 'auto',
-        marginRight: 10,
-    },
-
-    list: {
-        height: height - 100,
-
-    },
-
-    root: {
-        padding: 10,
-        height: '60%',
-    },
-
-    row: {
-        flexDirection: 'row',
-    },
-
-    inputContainer: {
-        backgroundColor: '#f2f2f2',
-        flex: 1,
-        borderWidth: 1,
-        borderColor: 'lightgrey',
-        marginRight: 10,
-        borderRadius: 25,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-
-    iconEmoji: {
-        marginHorizontal: 15,
-    },
-
-    input: {
-        flex: 1,
-    },
-
-    iconMicro: {
-        marginRight: 15,
-    },
-
-    buttonContainer: {
-        width: 40,
-        height: 40,
-        backgroundColor: '#ad40af',
-        borderRadius: 25,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 5,
-    },
-
-    container: {
-        padding: 10,
-        margin: 10,
-        borderRadius: 10,
-        maxWidth: '70%',
-    },
-});
 
 export default ChatRoom;
