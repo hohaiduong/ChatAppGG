@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
+    Button,
     Text, View, TextInput, Pressable, FlatList, SafeAreaView, Keyboard,
     StyleSheet, Image, Alert, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Platform
 } from 'react-native';
@@ -10,11 +11,22 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import EmojiSelector from 'react-native-emoji-selector';
 import { useNavigation } from '@react-navigation/native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import AnimatedStickerChz from 'react-native-animated-stickers-chz';
+import AnimatedStickerKeyboard from 'react-native-animated-stickers-chz/AnimatedKeyBoard';
+import AnimatedStickerView from 'react-native-animated-stickers-chz/AnimatedStickerView';
+
 
 import styles from '../Styles/ChatRoomStyle';
 
 
 const ChatRoom = ({ route }) => {
+
+    const StickerInit = {
+        app_name: 'ChatApp', //--> Your app name that can tag on copyright text and many more place.... //--> false if your are not using custom sticker
+    }
+
+    AnimatedStickerChz.InitialApp(StickerInit)
+
     const idUser = route.params.idUser;
     const idClient = route.params.idClient;
     const roomID = route.params.roomID;
@@ -22,8 +34,9 @@ const ChatRoom = ({ route }) => {
     const photoClient = route.params.photoClient;
     const [mess, setMess] = useState("");
     const [allChat, setAllChat] = useState([]);
-    const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
 
+    const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
+    const [vis, setVis] = useState(false)
     const navigation = useNavigation();
 
     navigation.setOptions(
@@ -53,15 +66,33 @@ const ChatRoom = ({ route }) => {
                         <Text>{msg}</Text>
                     </View> :
 
-                    <View style={[
-                        isMe ? styles.imgRightContainer : styles.imgLeftContainer
-                    ]}>
-                        <Image source={{ uri: base64 }} style={styles.imgMessages}></Image>
+                    (msgType == "image" ?
+                        <View style={[
+                            isMe ? styles.imgRightContainer : styles.imgLeftContainer
+                        ]}>
+                            <Image source={{ uri: base64 }} style={styles.imgMessages}></Image>
 
-                    </View>
+                        </View> :
+                        <AnimatedStickerView
+                            
+                            stickerHeight={50}
+                            stickerWidth={50}
+                            source={msg}
+                        />)
                 }
             </View>
         )
+    }
+
+
+    const handleBackButtonClick = async () => {
+        if (vis) {
+            setVis(false)
+        } else {
+            BackHandler.exitApp()
+            //Other think when backPress on invisible keyboard
+            return true
+        }
     }
 
     useEffect(() => {
@@ -111,14 +142,15 @@ const ChatRoom = ({ route }) => {
     const openCamera = () => {
         const options = {
             storageOptions: {
-              path: 'images',
-              mediaType: 'photo',
+                path: 'images',
+                mediaType: 'photo',
+                saveToPhotos: true
             },
             includeBase64: true,
-          };
-          launchCamera(options, response => {
+        };
+        launchCamera(options, response => {
             console.log('response', response);
-          });
+        });
     }
 
     const openImageLib = async () => {
@@ -156,6 +188,34 @@ const ChatRoom = ({ route }) => {
                     .update(chatListUpdate)
             });
     }
+    const sendSticker = (data) => {
+        let msgData = {
+            roomID: roomID,
+            msg: data,
+            from: idUser,
+            to: idClient,
+            msgType: "sticker"
+            // sendTime: moment().fomart()
+        }
+        const newReference = database().ref('/messages/' + roomID).push();
+
+        msgData.id = newReference.key;
+
+        newReference
+            .set(msgData)
+            .then(() => {
+                let chatListUpdate = {
+                    lastMSG: "Đã gửi một nhãn dán"
+                }
+                database()
+                    .ref('/chatlist/' + idClient + "/" + idUser)
+                    .update(chatListUpdate)
+
+                database()
+                    .ref('/chatlist/' + idUser + "/" + idClient)
+                    .update(chatListUpdate)
+            });
+    }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#FFDEAD" }}>
             <View style={[styles.list, { flex: 1 }]}>
@@ -182,7 +242,20 @@ const ChatRoom = ({ route }) => {
                             <Icon
                                 name="emotsmile"
                                 size={24}
-                                color="grey"
+                                color="black"
+                                style={styles.iconEmoji}
+                            />
+                        </Pressable>
+
+                        <Pressable
+                            onPress={() => [
+                                setVis(!vis),
+                                Keyboard.dismiss(),
+                            ]}>
+                            <Ionicons
+                                name="bulb-outline"
+                                size={24}
+                                color="black"
                                 style={styles.iconEmoji}
                             />
                         </Pressable>
@@ -199,7 +272,7 @@ const ChatRoom = ({ route }) => {
                             <Ionicons
                                 name="image-outline"
                                 size={24}
-                                color="grey"
+                                color="black"
                                 style={styles.iconMicro}
                             />
                         </Pressable>
@@ -223,6 +296,19 @@ const ChatRoom = ({ route }) => {
                         showSearchBar={false}
                     />
                 )}
+                <AnimatedStickerKeyboard
+                    textButtonColor={'#000'}
+                    infoText={false}
+                    visibility={vis}
+                    onSend={(uri) => { sendSticker(uri) }}
+                    keyBoardStyle={{ backgroundColor: '#FFDEAD' }}
+                    menuButtonStyle={{ backgroundColor: '#00000010' }}
+                    onBackPress={() => { handleBackButtonClick() }}
+                    textColor={'black'}
+                    hideDes={true}
+                    hideFooter={true}
+                    placeHolderColor={'#00000010'}
+                />
 
             </KeyboardAvoidingView>
         </SafeAreaView>
