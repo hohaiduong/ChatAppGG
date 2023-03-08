@@ -87,7 +87,8 @@ const styles = StyleSheet.create({
     },
 
     iconEmoji: {
-        marginHorizontal: 15,
+        marginHorizontal: 5,
+        marginLeft: 10
     },
 
     input: {
