@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useNavigation } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-const { width, height } = Dimensions.get("screen");
+import styles from '../Styles/AddChatStyle';
 
 const AddChat = ({ route }) => {
     var { id, nameUser, photo} = route.params;
@@ -122,39 +122,6 @@ const AddChat = ({ route }) => {
     )
 }
 
-const styles = StyleSheet.create({
-    input: {
-        width: width,
-        padding: 10,
-        flexDirection: "row",
-        alignItems: "center"
-    },
-    list: {
-        padding: 5,
-        marginLeft: 10,
-        marginTop: 10,
-        flexDirection: "row",
-        alignItems: "center",
-    },
 
-    image: {
-        width: 50,
-        height: 50,
-        borderRadius: 50,
-        marginRight: 10
-    },
-    text: {
-        fontSize: 20
-    },
-    textCancel: {
-        fontWeight: "bold",
-        color: "#1E90FF"
-    },
-    viewCancel: {
-        width: width - 190,
-        alignItems: "flex-end"
-
-    }
-})
 
 export default AddChat;
