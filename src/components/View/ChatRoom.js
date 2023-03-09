@@ -10,7 +10,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EmojiSelector from 'react-native-emoji-selector';
 import { useNavigation } from '@react-navigation/native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import AnimatedStickerChz from 'react-native-animated-stickers-chz';
 import AnimatedStickerKeyboard from 'react-native-animated-stickers-chz/AnimatedKeyBoard';
 import AnimatedStickerView from 'react-native-animated-stickers-chz/AnimatedStickerView';
@@ -73,12 +73,15 @@ const ChatRoom = ({ route }) => {
                             <Image source={{ uri: base64 }} style={styles.imgMessages}></Image>
 
                         </View> :
-                        <AnimatedStickerView
-                            
-                            stickerHeight={50}
-                            stickerWidth={50}
-                            source={msg}
-                        />)
+                        <View style={[
+                            isMe ? styles.imgRightContainer : styles.imgLeftContainer
+                        ]}>
+                            <AnimatedStickerView
+                                stickerHeight={50}
+                                stickerWidth={50}
+                                source={msg}
+                            />
+                        </View>)
                 }
             </View>
         )
@@ -106,51 +109,61 @@ const ChatRoom = ({ route }) => {
         return () => database().ref('/messages/' + roomID).off('child_added', onChildAdd);
     }, []);
 
+    const postMess = (msg, msgType, lastMSG) => {
+        let msgData = {
+            roomID: roomID,
+            msg: msg,
+            from: idUser,
+            to: idClient,
+            msgType: msgType
+            // sendTime: moment().fomart()
+        }
+        const newReference = database().ref('/messages/' + roomID).push();
+
+        msgData.id = newReference.key;
+
+        newReference
+            .set(msgData)
+            .then(() => {
+                let chatListUpdate = {
+                    lastMSG: lastMSG
+                }
+                database()
+                    .ref('/chatlist/' + idClient + "/" + idUser)
+                    .update(chatListUpdate)
+
+                database()
+                    .ref('/chatlist/' + idUser + "/" + idClient)
+                    .update(chatListUpdate)
+            });
+    }
+
     const sendMSG = () => {
         if (mess !== "") {
-            let msgData = {
-                roomID: roomID,
-                msg: mess,
-                from: idUser,
-                to: idClient,
-                msgType: "text"
-                // sendTime: moment().fomart()
-            }
-            const newReference = database().ref('/messages/' + roomID).push();
-
-            msgData.id = newReference.key;
-
-            newReference
-                .set(msgData)
-                .then(() => {
-                    let chatListUpdate = {
-                        lastMSG: mess
-                    }
-                    database()
-                        .ref('/chatlist/' + idClient + "/" + idUser)
-                        .update(chatListUpdate)
-
-                    database()
-                        .ref('/chatlist/' + idUser + "/" + idClient)
-                        .update(chatListUpdate)
-                });
+            postMess(mess, "text", mess)
         } else {
             Alert.alert("Error")
         }
     }
 
     const openCamera = () => {
-        const options = {
+        var images = "";
+            const options = {
             storageOptions: {
                 path: 'images',
                 mediaType: 'photo',
-                saveToPhotos: true
+                saveToPhotos: true,
+                quality: 1
             },
             includeBase64: true,
         };
         launchCamera(options, response => {
-            console.log('response', response);
-        });
+            images = response;
+            const msgType = "image"
+            const lastMSG = "Đã gửi một ảnh";
+            postMess(images.assets[0].base64, msgType, lastMSG)
+        })
+        
     }
 
     const openImageLib = async () => {
@@ -161,60 +174,16 @@ const ChatRoom = ({ route }) => {
             includeBase64: true,
         };
         const images = await launchImageLibrary(options);
-        let msgData = {
-            roomID: roomID,
-            msg: images.assets[0].base64,
-            from: idUser,
-            to: idClient,
-            msgType: "image"
-            // sendTime: moment().fomart()
-        }
-        const newReference = database().ref('/messages/' + roomID).push();
-
-        msgData.id = newReference.key;
-
-        newReference
-            .set(msgData)
-            .then(() => {
-                let chatListUpdate = {
-                    lastMSG: "Đã gửi một hình ảnh"
-                }
-                database()
-                    .ref('/chatlist/' + idClient + "/" + idUser)
-                    .update(chatListUpdate)
-
-                database()
-                    .ref('/chatlist/' + idUser + "/" + idClient)
-                    .update(chatListUpdate)
-            });
+        const msgType = "image"
+        const lastMSG = "Đã gửi một ảnh";
+        postMess(images.assets[0].base64, msgType, lastMSG)
+       
     }
     const sendSticker = (data) => {
-        let msgData = {
-            roomID: roomID,
-            msg: data,
-            from: idUser,
-            to: idClient,
-            msgType: "sticker"
-            // sendTime: moment().fomart()
-        }
-        const newReference = database().ref('/messages/' + roomID).push();
-
-        msgData.id = newReference.key;
-
-        newReference
-            .set(msgData)
-            .then(() => {
-                let chatListUpdate = {
-                    lastMSG: "Đã gửi một nhãn dán"
-                }
-                database()
-                    .ref('/chatlist/' + idClient + "/" + idUser)
-                    .update(chatListUpdate)
-
-                database()
-                    .ref('/chatlist/' + idUser + "/" + idClient)
-                    .update(chatListUpdate)
-            });
+        const msg = data;
+        const msgType = "sticker"
+        const lastMSG = "Đã gửi một nhãn dán";
+        postMess(msg, msgType, lastMSG)
     }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#FFDEAD" }}>
@@ -300,7 +269,7 @@ const ChatRoom = ({ route }) => {
                     textButtonColor={'#000'}
                     infoText={false}
                     visibility={vis}
-                    onSend={(uri) => { sendSticker(uri) }}
+                    onSend={(uri) => { [sendSticker(uri), setVis(!vis)] }}
                     keyBoardStyle={{ backgroundColor: '#FFDEAD' }}
                     menuButtonStyle={{ backgroundColor: '#00000010' }}
                     onBackPress={() => { handleBackButtonClick() }}
