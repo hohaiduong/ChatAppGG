@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Button,
-    Text, View, TextInput, Pressable, FlatList, SafeAreaView, Keyboard,
-    StyleSheet, Image, Alert, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Platform
+    Text, View, Image, FlatList
 } from 'react-native';
-import Icon from 'react-native-vector-icons/SimpleLineIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import EmojiSelector from 'react-native-emoji-selector';
 import AnimatedStickerView from 'react-native-animated-stickers-chz/AnimatedStickerView';
 
 import database from '@react-native-firebase/database';

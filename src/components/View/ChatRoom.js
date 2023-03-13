@@ -11,9 +11,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import EmojiSelector from 'react-native-emoji-selector';
 
 import { useNavigation } from '@react-navigation/native';
-import { launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import AnimatedStickerChz from 'react-native-animated-stickers-chz';
-import AnimatedStickerKeyboard from 'react-native-animated-stickers-chz/AnimatedKeyBoard';
 
 import GetLocation from 'react-native-get-location';
 import { MapMarker, enableLatestRenderer, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -21,12 +19,10 @@ import MapView from 'react-native-maps';
 
 import ImageMessages from '../controller/ChatRoom/ImageMessages';
 import GetMessages from '../controller/ChatRoom/GetMessages';
-import SendSticker from '../controller/ChatRoom/SendSticker';
+
 import styles from '../Styles/ChatRoomStyle';
 import ListChat from '../Model/ChatRoom/ChatList';
 import KeyBoardSticker from '../Model/ChatRoom/KeyBoardSticker';
-
-import TEst from './TEst';
 
 const ChatRoom = ({ route }) => {
 
@@ -75,142 +71,11 @@ const ChatRoom = ({ route }) => {
     const sendMSG = () => {
         if (mess !== "") {
             GetMessages.getMess(roomID, mess, idUser, idClient, "text", mess)
-    // navigation.setOptions()
-
-    const ItemChat = ({ item }) => {
-        var messTo = item.to;
-        const isMe = messTo != idUser;
-        const msg = item.msg;
-        const msgType = item.msgType;
-        const base64 = 'data:image/png;base64,' + msg;
-        return (
-            <View>
-                {msgType == "text" ?
-                    <View style={[styles.messages,
-                    isMe ? styles.rightContainer : styles.leftContainer
-                    ]}>
-                        <Text>{msg}</Text>
-                    </View> :
-
-                    (msgType == "image" ?
-                        <View style={[
-                            isMe ? styles.imgRightContainer : styles.imgLeftContainer
-                        ]}>
-                            <Image source={{ uri: base64 }} style={styles.imgMessages}></Image>
-
-                        </View> :
-                        <View style={[
-                            isMe ? styles.imgRightContainer : styles.imgLeftContainer
-                        ]}>
-                            <AnimatedStickerView
-                                stickerHeight={50}
-                                stickerWidth={50}
-                                source={msg}
-                            />
-                        </View>)
-                }
-            </View>
-        )
-    }
-
-
-    const handleBackButtonClick = async () => {
-        if (vis) {
-            setVis(false)
-        } else {
-            BackHandler.exitApp()
-            //Other think when backPress on invisible keyboard
-            return true
+            // navigation.setOptions()
         }
+
     }
 
-    useEffect(() => {
-        const onChildAdd = database()
-            .ref('/messages/' + roomID)
-            .on('child_added', snapshot => {
-                setAllChat((state) => [snapshot.val(), ...state])
-            });
-
-        // Stop listening for updates when no longer required
-        return () => database().ref('/messages/' + roomID).off('child_added', onChildAdd);
-    }, []);
-
-    const postMess = (msg, msgType, lastMSG) => {
-        let msgData = {
-            roomID: roomID,
-            msg: msg,
-            from: idUser,
-            to: idClient,
-            msgType: msgType
-            // sendTime: moment().fomart()
-        }
-        const newReference = database().ref('/messages/' + roomID).push();
-
-        msgData.id = newReference.key;
-
-        newReference
-            .set(msgData)
-            .then(() => {
-                let chatListUpdate = {
-                    lastMSG: lastMSG
-                }
-                database()
-                    .ref('/chatlist/' + idClient + "/" + idUser)
-                    .update(chatListUpdate)
-
-                database()
-                    .ref('/chatlist/' + idUser + "/" + idClient)
-                    .update(chatListUpdate)
-            });
-    }
-
-    const sendMSG = () => {
-        if (mess !== "") {
-            postMess(mess, "text", mess)
-        } else {
-            Alert.alert("Error")
-        }
-    }
-
-    const openCamera = () => {
-        var images = "";
-            const options = {
-            storageOptions: {
-                path: 'images',
-                mediaType: 'photo',
-                saveToPhotos: true,
-                quality: 1
-            },
-            includeBase64: true,
-        };
-        launchCamera(options, response => {
-            images = response;
-            const msgType = "image"
-            const lastMSG = "Đã gửi một ảnh";
-            postMess(images.assets[0].base64, msgType, lastMSG)
-        })
-        
-    }
-
-    const openImageLib = async () => {
-        const options = {
-            selectionLimit: 1,
-            mediaType: 'photo',
-            quality: 1,
-            includeBase64: true,
-        };
-        const images = await launchImageLibrary(options);
-        const msgType = "image"
-        const lastMSG = "Đã gửi một ảnh";
-        postMess(images.assets[0].base64, msgType, lastMSG)
-       
-    }
-    const sendSticker = (data) => {
-        const msg = data;
-        const msgType = "sticker"
-        const lastMSG = "Đã gửi một nhãn dán";
-        postMess(msg, msgType, lastMSG)
-    }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#FFDEAD" }}>
             <View style={[styles.list, { flex: 1 }]}>
@@ -290,18 +155,6 @@ const ChatRoom = ({ route }) => {
                 )}
                 <KeyBoardSticker
                     roomID={roomID} idUser={idUser} idClient={idClient} getVis={vis}/>
-                <AnimatedStickerKeyboard
-                    textButtonColor={'#000'}
-                    infoText={false}
-                    visibility={vis}
-                    onSend={(uri) => { [sendSticker(uri), setVis(!vis)] }}
-                    keyBoardStyle={{ backgroundColor: '#FFDEAD' }}
-                    menuButtonStyle={{ backgroundColor: '#00000010' }}
-                    onBackPress={() => { handleBackButtonClick() }}
-                    textColor={'black'}
-                    hideDes={true}
-                    hideFooter={true}
-                />
                 {/* {showMap && 
                 <MapView
                 style={{height: 50, width: 50, position: "absolute"}} 
