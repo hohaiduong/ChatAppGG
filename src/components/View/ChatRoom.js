@@ -289,7 +289,7 @@ const ChatRoom = ({ route }) => {
                     />
                 )}
                 <KeyBoardSticker
-                    roomID={roomID} idUser={idUser} idClient={idClient} getVis={vis}
+                    roomID={roomID} idUser={idUser} idClient={idClient} getVis={vis}/>
                 <AnimatedStickerKeyboard
                     textButtonColor={'#000'}
                     infoText={false}
