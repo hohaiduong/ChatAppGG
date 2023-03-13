@@ -105,11 +105,11 @@ const AddChat = ({ route }) => {
                     keyboardType="email-address"
                 //   style={styles.textInput}
                 />
-                <View style={styles.viewCancel}>
+                {/* <View style={styles.viewCancel}>
                     <TouchableOpacity onPress={() => {navigation.goBack()}}>
                         <Text style={styles.textCancel}>Cancel</Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
             </View>
             <View>
                 <FlatList
