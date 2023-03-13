@@ -154,7 +154,7 @@ const ChatRoom = ({ route }) => {
                     />
                 )}
                 <KeyBoardSticker
-                    roomID={roomID} idUser={idUser} idClient={idClient} getVis={vis} />
+                    roomID={roomID} idUser={idUser} idClient={idClient} getVis={vis}/>
                 {/* {showMap && 
                 <MapView
                 style={{height: 50, width: 50, position: "absolute"}} 
