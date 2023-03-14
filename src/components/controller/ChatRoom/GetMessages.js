@@ -7,7 +7,6 @@ const getMess = (roomID, msg, idUser, idClient, msgType, lastMSG) => {
         from: idUser,
         to: idClient,
         msgType: msgType
-        // sendTime: moment().fomart()
     }
     const newReference = database().ref('/messages/' + roomID).push();
 
