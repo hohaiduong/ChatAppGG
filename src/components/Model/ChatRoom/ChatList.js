@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Text, View, Image, FlatList
+    Text, View, Image, FlatList, Pressable
 } from 'react-native';
 import AnimatedStickerView from 'react-native-animated-stickers-chz/AnimatedStickerView';
 
 import database from '@react-native-firebase/database';
 import styles from '../../Styles/ChatRoomStyle';
+import TEst from '../../View/TEst';
 
-const ListChat = ({roomID, idUser}) => {
+const ListChat = ({ roomID, idUser }) => {
     const [allChat, setAllChat] = useState([]);
-   
     useEffect(() => {
         const onChildAdd = database()
             .ref('/messages/' + roomID)
@@ -20,7 +20,7 @@ const ListChat = ({roomID, idUser}) => {
         // Stop listening for updates when no longer required
         return () => database().ref('/messages/' + roomID).off('child_added', onChildAdd);
     }, []);
-    
+
     const ItemChat = ({ item }) => {
         var messTo = item.to;
         const isMe = messTo != idUser;
@@ -29,29 +29,44 @@ const ListChat = ({roomID, idUser}) => {
         const base64 = 'data:image/png;base64,' + msg;
         return (
             <View>
-                {msgType == "text" ?
-                    <View style={[styles.messages,
-                    isMe ? styles.rightContainer : styles.leftContainer
-                    ]}>
-                        <Text>{msg}</Text>
-                    </View> :
-
-                    (msgType == "image" ?
-                        <View style={[
-                            isMe ? styles.imgRightContainer : styles.imgLeftContainer
+                {
+                    msgType == "text" ?
+                        <View style={[styles.messages,
+                        isMe ? styles.rightContainer : styles.leftContainer
                         ]}>
-                            <Image source={{ uri: base64 }} style={styles.imgMessages}></Image>
-
+                            <Text>{msg}</Text>
                         </View> :
-                        (<View style={[
-                            isMe ? styles.imgRightContainer : styles.imgLeftContainer
-                        ]}>
-                            <AnimatedStickerView
-                                stickerHeight={50}
-                                stickerWidth={50}
-                                source={msg}
-                            />
-                        </View>))
+
+                        (msgType == "image" ?
+                            <View style={[
+                                isMe ? styles.imgRightContainer : styles.imgLeftContainer
+                            ]}>
+                                <Image source={{ uri: base64 }} style={styles.imgMessages}></Image>
+
+                            </View> :
+                            (msgType == "sticker" ?
+                                <View style={[
+                                    isMe ? styles.imgRightContainer : styles.imgLeftContainer
+                                ]}>
+                                    <AnimatedStickerView
+                                        stickerHeight={50}
+                                        stickerWidth={50}
+                                        source={msg}
+                                    />
+                                </View> :
+                                (
+                                    <View>
+                                        <Pressable onPress={() => {
+                                            TEst.setShowMap(true)
+                                            console.log(TEst.getShowMap());
+                                            TEst.setData(msg)
+                                        }}>
+                                            <Text>Xem vị trí</Text>
+                                        </Pressable>
+                                    </View>
+                                )
+                            )
+                        )
                 }
             </View>
         )

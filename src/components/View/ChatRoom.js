@@ -19,18 +19,27 @@ import MapView from 'react-native-maps';
 
 import ImageMessages from '../controller/ChatRoom/ImageMessages';
 import GetMessages from '../controller/ChatRoom/GetMessages';
+import SendMap from '../controller/ChatRoom/SendMap';
 
 import styles from '../Styles/ChatRoomStyle';
 import ListChat from '../Model/ChatRoom/ChatList';
 import KeyBoardSticker from '../Model/ChatRoom/KeyBoardSticker';
+import TEst from './TEst';
+import { height } from '../Util/Constant';
 
 const ChatRoom = ({ route }) => {
 
+    useEffect(() => {
+        getLocation()
+        setShowMap(TEst.getShowMap())
+    }, [])
     const StickerInit = {
         app_name: 'ChatApp', //--> Your app name that can tag on copyright text and many more place.... //--> false if your are not using custom sticker
     }
 
+    const [showMap, setShowMap] = useState(TEst.getShowMap())
     AnimatedStickerChz.InitialApp(StickerInit)
+
 
     const getLocation = () => {
         GetLocation.getCurrentPosition({
@@ -38,13 +47,14 @@ const ChatRoom = ({ route }) => {
             timeout: 60000,
         })
             .then(location => {
-                console.log(location);
+                setLocation(location)
             })
             .catch(err => {
                 const { code, message } = err;
                 console.warn(code, message);
             })
     }
+
     const idUser = route.params.idUser;
     const idClient = route.params.idClient;
     const roomID = route.params.roomID;
@@ -55,9 +65,9 @@ const ChatRoom = ({ route }) => {
 
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
     const [vis, setVis] = useState(false)
-    var [showMap, setShowMap] = useState(true)
-    const navigation = useNavigation();
+    const [location, setLocation] = useState([])
 
+    const navigation = useNavigation();
     navigation.setOptions(
         {
             headerTitle: () => (
@@ -73,7 +83,6 @@ const ChatRoom = ({ route }) => {
             GetMessages.getMess(roomID, mess, idUser, idClient, "text", mess)
             // navigation.setOptions()
         }
-
     }
 
     return (
@@ -89,7 +98,8 @@ const ChatRoom = ({ route }) => {
                     <View style={styles.inputContainer}>
                         <Pressable
                             onPress={() => [
-                                setIsEmojiPickerOpen(currentValue => !currentValue),
+                                setIsEmojiPickerOpen(currentMessage => !currentMessage),
+                                setVis(false),
                                 Keyboard.dismiss(),
                             ]}>
                             <Icon
@@ -103,8 +113,11 @@ const ChatRoom = ({ route }) => {
                         <Pressable
                             onPress={() => [
                                 setVis(!vis),
+                                setIsEmojiPickerOpen(false),
                                 Keyboard.dismiss(),
-                                // getLocation().
+                                // getLocation()
+                                // SendMap.sendMap(location, roomID, idUser, idClient)
+                                console.log(TEst.getData()),
                                 // setShowMap(true)
                             ]}>
                             <Ionicons
@@ -154,47 +167,44 @@ const ChatRoom = ({ route }) => {
                     />
                 )}
                 <KeyBoardSticker
-                    roomID={roomID} idUser={idUser} idClient={idClient} getVis={vis}/>
-                {/* {showMap && 
-                <MapView
-                style={{height: 50, width: 50, position: "absolute"}} 
-                initialRegion={{
-                    latitude:16.548209,
-                    longitude: 107.456722
-                }}
-                ></MapView>
-            } */}
+                    roomID={roomID} idUser={idUser} idClient={idClient} getVis={vis} />
+
             </KeyboardAvoidingView>
+            {showMap &&
+                <SafeAreaView style={{ position: "absolute" }}>
+                    <MapView
+                        provider={PROVIDER_GOOGLE}
+                        showsUserLocation={true}
+                        // showsTraffic={true}
+                        style={{ height: height - 90, width: 600 }}
+                        zoomControlEnabled={true}
+                        followsUserLocation={true}
+                        region={{
+                            latitude: TEst.getData().latitude,
+                            longitude: TEst.getData().longitude,
+                            latitudeDelta: 0.0001,
+                            longitudeDelta: 0.0015,
+                        }}
+                    >
+                        <MapMarker
+                            coordinate={{
+                                latitude: TEst.getData().latitude,
+                                longitude: TEst.getData().longitude,
+                            }}
+                        />
+                    </MapView>
+                    <Pressable style={{ position: "absolute" }}
+                        onPress={() => {
+                            TEst.setShowMap(false)
+                            console.log(TEst.getShowMap());
+                        }}>
+                        <Text>X</Text>
+                    </Pressable>
+                </SafeAreaView>
+            }
+
         </SafeAreaView>
     )
-
-    // return (
-    //     <View> 
-    //         {showMap && (
-    //         <MapView
-    //             provider={PROVIDER_GOOGLE}
-    //             style={{ height: 300, width: 400 }}
-    //             showsUserLocation={true}
-    //             showsTraffic={true}
-    //             zoomControlEnabled={true}
-    //             followsUserLocation = {true}
-    //             region={{
-    //                 latitude: 16.4487305,
-    //                 longitude: 107.6047668,
-    //                 latitudeDelta: 0.000000001,
-    //                 longitudeDelta: 0.000000015,
-    //             }}
-    //         >
-    //             <MapMarker
-    //                 coordinate={{
-    //                     latitude: 17.4487305,
-    //                     longitude: 107.6047668
-    //                 }}
-    //             />
-    //         </MapView>)
-    //     }
-    //     </View>
-    // )
 }
 
 
