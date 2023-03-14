@@ -11,13 +11,6 @@ const getAccount = async() => {
     }
 }
 
-const setLogin = async(data) => {
-    return AsyncStorage.setItem("login", data)
-}
-
-const getLogin = async() => {
-    return AsyncStorage.getItem("login")
-}
 const setAccount = async(data) => {
     try {
         const jsonValue = JSON.stringify(data)
@@ -35,4 +28,4 @@ const logout = async() => {
 }
 
 
-export default {getAccount, setAccount, logout, setLogin};
+export default {getAccount, setAccount, logout};
