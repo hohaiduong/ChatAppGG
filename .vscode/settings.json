@@ -1,0 +1,4 @@
+{
+    "powershell.codeFormatting.openBraceOnSameLine": false,
+    "scm.autoReveal": false
+}
