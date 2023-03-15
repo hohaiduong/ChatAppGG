@@ -55,14 +55,31 @@ const ListChat = ({ roomID, idUser }) => {
                                     />
                                 </View> :
                                 (
-                                    <View>
-                                        <Pressable onPress={() => {
-                                            TEst.setShowMap(true)
-                                            console.log(TEst.getShowMap());
-                                            TEst.setData(msg)
+                                    <View
+                                        style={[
+                                            isMe ? styles.imgRightContainer : styles.imgLeftContainer
+                                        ]}>
+                                        <View style={{
+                                            flexDirection: "row", alignItems: "center",
+                                            justifyContent: "center", backgroundColor: "#696969", padding: 10, borderRadius: 25, marginTop: 10
                                         }}>
-                                            <Text>Xem vị trí</Text>
-                                        </Pressable>
+                                            <View>
+                                                <Image source={{ uri: "https://www.freepnglogos.com/uploads/lokasi-logo-png/lokasi-logo-ubicaci-puntero-pasador-mapa-ficos-vectoriales-9.png" }}
+                                                    style={{ width: 25, height: 25, resizeMode: "contain" }}
+                                                />
+
+                                            </View>
+                                            <View>
+                                                <Text style={{color: "white"}}>Đã chia sẻ vị trí</Text>
+                                                <Pressable onPress={() => {
+                                                    TEst.setData(msg)
+                                                }}
+                                                style={{backgroundColor: "wheat", borderRadius: 25, alignItems:"center", marginTop: 5}}
+                                                >
+                                                    <Text style={{color: "black"}}>Lấy vị trí</Text>
+                                                </Pressable>
+                                            </View>
+                                        </View>
                                     </View>
                                 )
                             )

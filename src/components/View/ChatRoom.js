@@ -14,9 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import AnimatedStickerChz from 'react-native-animated-stickers-chz';
 
 import GetLocation from 'react-native-get-location';
-import { MapMarker, enableLatestRenderer, PROVIDER_GOOGLE } from 'react-native-maps';
-import MapView from 'react-native-maps';
-
+ư
 import ImageMessages from '../controller/ChatRoom/ImageMessages';
 import GetMessages from '../controller/ChatRoom/GetMessages';
 import SendMap from '../controller/ChatRoom/SendMap';
@@ -25,21 +23,19 @@ import styles from '../Styles/ChatRoomStyle';
 import ListChat from '../Model/ChatRoom/ChatList';
 import KeyBoardSticker from '../Model/ChatRoom/KeyBoardSticker';
 import TEst from './TEst';
-import { height } from '../Util/Constant';
+import Map from '../Model/ChatRoom/Map';
+import { height, width } from '../Util/Constant';
 
 const ChatRoom = ({ route }) => {
 
     useEffect(() => {
         getLocation()
-        setShowMap(TEst.getShowMap())
     }, [])
     const StickerInit = {
         app_name: 'ChatApp', //--> Your app name that can tag on copyright text and many more place.... //--> false if your are not using custom sticker
     }
 
-    const [showMap, setShowMap] = useState(TEst.getShowMap())
     AnimatedStickerChz.InitialApp(StickerInit)
-
 
     const getLocation = () => {
         GetLocation.getCurrentPosition({
@@ -65,6 +61,11 @@ const ChatRoom = ({ route }) => {
 
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
     const [vis, setVis] = useState(false)
+    const [showMap, setShowMap] = useState(false)
+    const [optionsMap, setOptionsMap] = useState(false)
+    const [optionMapCancel, setOptionMapCancel] = useState(false)
+
+
     const [location, setLocation] = useState([])
 
     const navigation = useNavigation();
@@ -81,7 +82,6 @@ const ChatRoom = ({ route }) => {
     const sendMSG = () => {
         if (mess !== "") {
             GetMessages.getMess(roomID, mess, idUser, idClient, "text", mess)
-            // navigation.setOptions()
         }
     }
 
@@ -115,10 +115,6 @@ const ChatRoom = ({ route }) => {
                                 setVis(!vis),
                                 setIsEmojiPickerOpen(false),
                                 Keyboard.dismiss(),
-                                // getLocation()
-                                // SendMap.sendMap(location, roomID, idUser, idClient)
-                                console.log(TEst.getData()),
-                                // setShowMap(true)
                             ]}>
                             <Ionicons
                                 name="bulb-outline"
@@ -138,6 +134,14 @@ const ChatRoom = ({ route }) => {
                             <Ionicons
                                 name="image-outline"
                                 size={24}
+                                color="black"
+                                style={styles.iconMicro}
+                            />
+                        </Pressable>
+                        <Pressable onPress={() => { setOptionsMap(!optionsMap) }}>
+                            <Ionicons
+                                name="navigate-circle-outline"
+                                size={25}
                                 color="black"
                                 style={styles.iconMicro}
                             />
@@ -171,38 +175,51 @@ const ChatRoom = ({ route }) => {
 
             </KeyboardAvoidingView>
             {showMap &&
-                <SafeAreaView style={{ position: "absolute" }}>
-                    <MapView
-                        provider={PROVIDER_GOOGLE}
-                        showsUserLocation={true}
-                        // showsTraffic={true}
-                        style={{ height: height - 90, width: 600 }}
-                        zoomControlEnabled={true}
-                        followsUserLocation={true}
-                        region={{
-                            latitude: TEst.getData().latitude,
-                            longitude: TEst.getData().longitude,
-                            latitudeDelta: 0.0001,
-                            longitudeDelta: 0.0015,
-                        }}
-                    >
-                        <MapMarker
-                            coordinate={{
-                                latitude: TEst.getData().latitude,
-                                longitude: TEst.getData().longitude,
-                            }}
-                        />
-                    </MapView>
-                    <Pressable style={{ position: "absolute" }}
-                        onPress={() => {
-                            TEst.setShowMap(false)
-                            console.log(TEst.getShowMap());
-                        }}>
-                        <Text>X</Text>
-                    </Pressable>
-                </SafeAreaView>
+                <Map latitude={location.latitude} longitude={location.longitude} />
             }
 
+            {optionsMap &&
+                (
+                    <View style={{
+                        position: "absolute",
+                        padding: 10,
+                        backgroundColor: "#fff",
+                        borderRadius: 10,
+                        alignSelf: "flex-end",
+                        marginTop: height - 205,
+
+                    }}>
+                        <Pressable onPress={() => { setShowMap(true), setOptionsMap(false), setOptionMapCancel(true) }}
+                            style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                            <Ionicons
+                                name="navigate-circle-outline"
+                                size={20}
+                                color="black"
+                                style={styles.iconMicro}
+                            />
+                            <Text style={{ color: "black" }}>Xem vị trí</Text>
+                        </Pressable>
+                        <Pressable onPress={() => { SendMap.sendMap(location, roomID, idUser, idClient) }}
+                            style={{ flexDirection: "row", alignItems: "center" }}>
+                            <Ionicons
+                                name="location-outline"
+                                size={20}
+                                color="black"
+                                style={styles.iconMicro}
+                            />
+                            <Text style={{ color: "black" }}>Gửi vị trí</Text>
+                        </Pressable>
+                    </View>
+                )
+            }
+            {
+                optionMapCancel && (
+                    <Pressable onPress={() => { setShowMap(false), setOptionMapCancel(false) }}
+                        style={{ position: "absolute", backgroundColor: "darkgray", borderRadius: 50, width: 20, height: 20, alignItems: "center" }}>
+                        <Text style={{ color: "black", fontSize: 13 }}>X</Text>
+                    </Pressable>
+                )
+            }
         </SafeAreaView>
     )
 }
