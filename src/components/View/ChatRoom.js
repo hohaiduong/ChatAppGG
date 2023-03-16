@@ -14,7 +14,6 @@ import { useNavigation } from '@react-navigation/native';
 import AnimatedStickerChz from 'react-native-animated-stickers-chz';
 
 import GetLocation from 'react-native-get-location';
-ư
 import ImageMessages from '../controller/ChatRoom/ImageMessages';
 import GetMessages from '../controller/ChatRoom/GetMessages';
 import SendMap from '../controller/ChatRoom/SendMap';
@@ -43,6 +42,7 @@ const ChatRoom = ({ route }) => {
             timeout: 60000,
         })
             .then(location => {
+                console.log(location);
                 setLocation(location)
             })
             .catch(err => {
@@ -50,6 +50,13 @@ const ChatRoom = ({ route }) => {
                 console.warn(code, message);
             })
     }
+    
+    useEffect (() => {
+        const interval = setInterval(() => {
+            getLocation()
+        }, 4000);
+        return () => clearInterval(interval)
+    })
 
     const idUser = route.params.idUser;
     const idClient = route.params.idClient;
