@@ -1,20 +1,14 @@
 import React, { useState, useEffect} from 'react';
 
-import { AnimatedRegion, MapMarker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { MarkerAnimated, MapMarker, PROVIDER_GOOGLE } from 'react-native-maps';
 import MapView from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 
 import { View, Pressable, Text, SafeAreaView } from 'react-native';
 import TEst from '../../View/TEst';
 import { width, height } from '../../Util/Constant';
-import GetLocation from 'react-native-get-location';
-import { API_GG_KEY } from '../../Util/Constant';
 
-const Map = ({latitude, longitude}) => {
-
-    const origin = {latitude: latitude, longitude: longitude};
-    const destination = {latitude: TEst.getShowMap().latitude, longitude: TEst.getShowMap().longitude}
-    
+const Map = () => {
     return (
         <SafeAreaView style={{ position: "absolute" }}>
             <MapView
@@ -30,7 +24,7 @@ const Map = ({latitude, longitude}) => {
                     longitudeDelta: 0.0015,
                 }}
             >
-                <MapMarker
+                <MarkerAnimated
                     coordinate={{
                         latitude: TEst.getData().latitude,
                         longitude: TEst.getData().longitude,

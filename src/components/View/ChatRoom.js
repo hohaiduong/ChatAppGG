@@ -29,6 +29,7 @@ const ChatRoom = ({ route }) => {
 
     useEffect(() => {
         getLocation()
+        TEst.getIDMess()
     }, [])
     const StickerInit = {
         app_name: 'ChatApp', //--> Your app name that can tag on copyright text and many more place.... //--> false if your are not using custom sticker
@@ -42,7 +43,6 @@ const ChatRoom = ({ route }) => {
             timeout: 60000,
         })
             .then(location => {
-                console.log(location);
                 setLocation(location)
             })
             .catch(err => {
@@ -54,7 +54,13 @@ const ChatRoom = ({ route }) => {
     useEffect (() => {
         const interval = setInterval(() => {
             getLocation()
-        }, 4000);
+            TEst.getIDMess()
+            TEst.getData();
+            database().ref('/messages/' + roomID + '/' + TEst.getIDMess())
+            .update({
+                msg: location
+            })
+        }, 1000);
         return () => clearInterval(interval)
     })
 

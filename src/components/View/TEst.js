@@ -10,6 +10,15 @@ const getData = () => {
     return dataMess;
 }
 
+var idMess = "";
+const setIDMess = (data) => {
+    idMess = data;
+    return idMess;
+}
+
+const getIDMess = () => {
+    return idMess;
+}
 var ShowMap = false
 
 const setShowMap = (showMap) => {
@@ -22,4 +31,4 @@ const getShowMap = () => {
 }
 
 
-export default { setData, getData, setShowMap, getShowMap }
+export default { setData, getData, setShowMap, getShowMap, setIDMess, getIDMess }

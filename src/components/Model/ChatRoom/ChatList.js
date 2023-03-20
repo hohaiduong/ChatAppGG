@@ -9,17 +9,18 @@ import styles from '../../Styles/ChatRoomStyle';
 import TEst from '../../View/TEst';
 
 const ListChat = ({ roomID, idUser }) => {
+    var [idMess, setIDMess] = useState("")
     const [allChat, setAllChat] = useState([]);
+
     useEffect(() => {
         const onChildAdd = database()
             .ref('/messages/' + roomID)
             .on('child_added', snapshot => {
                 setAllChat((state) => [snapshot.val(), ...state])
             });
-
         // Stop listening for updates when no longer required
         return () => database().ref('/messages/' + roomID).off('child_added', onChildAdd);
-    }, []);
+    }, [roomID]);
 
     const ItemChat = ({ item }) => {
         var messTo = item.to;
@@ -70,13 +71,14 @@ const ListChat = ({ roomID, idUser }) => {
 
                                             </View>
                                             <View>
-                                                <Text style={{color: "white"}}>Đã chia sẻ vị trí</Text>
+                                                <Text style={{ color: "white" }}>Đã chia sẻ vị trí</Text>
                                                 <Pressable onPress={() => {
-                                                    TEst.setData(msg)
+                                                    TEst.setIDMess(item.id)
+                                                    // setIDMess(item.id)
                                                 }}
-                                                style={{backgroundColor: "wheat", borderRadius: 25, alignItems:"center", marginTop: 5}}
+                                                    style={{ backgroundColor: "wheat", borderRadius: 25, alignItems: "center", marginTop: 5 }}
                                                 >
-                                                    <Text style={{color: "black"}}>Lấy vị trí</Text>
+                                                    <Text style={{ color: "black" }}>Lấy vị trí</Text>
                                                 </Pressable>
                                             </View>
                                         </View>
@@ -88,6 +90,18 @@ const ListChat = ({ roomID, idUser }) => {
             </View>
         )
     }
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            TEst.getIDMess()
+            database()
+                .ref('/messages/' + roomID + '/' + TEst.getIDMess())
+                .on('value', snapshot => {
+                    TEst.setData(snapshot.val().msg)
+                });
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [])
 
     return (
         <View>
