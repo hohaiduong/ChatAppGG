@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     View, Text, SafeAreaView, TextInput, FlatList,
-     TouchableOpacity, Image,
+    TouchableOpacity, Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
@@ -9,13 +9,12 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Styles/AddChatStyle';
 
 const AddChat = ({ route }) => {
-    var { id, nameUser, photo} = route.params;
+    var { id, nameUser, photo } = route.params;
     roomID = Math.floor(Math.random() * 999999999999);
     const [allUser, setAllUser] = useState([])
     const [allUserBackup, setAllUserBackup] = useState([])
     const [search, setSearch] = useState("");
     const navigation = useNavigation();
-    console.log(photo);
     useEffect(() => {
         getAllUser()
     }, [])
@@ -43,14 +42,14 @@ const AddChat = ({ route }) => {
             photo: photo,
             name: nameUser,
             lastMSG: "",
-            
+
         }
         database()
             .ref('/chatlist/' + data.id + "/" + id)
             .update(myData)
             .then(() => console.log("Success"));
 
-        data.lastMSG= "";
+        data.lastMSG = "";
         data.roomID = roomID;
 
         database()
@@ -59,8 +58,8 @@ const AddChat = ({ route }) => {
             .then(() => console.log("Success"));
         navigation.navigate("ChatRoom", {
             idUser: id, idClient: data.id,
-            photoUser: photo, photoClient: data.photo, 
-            nameUser: nameUser, nameClient: data.name, 
+            photoUser: photo, photoClient: data.photo,
+            nameUser: nameUser, nameClient: data.name,
             roomID: roomID
         })
     }
