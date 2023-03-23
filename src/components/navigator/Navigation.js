@@ -8,6 +8,8 @@ import HomeChat from '../View/Home';
 import AddChat from '../View/AddChat';
 import ChatRoom from '../View/ChatRoom';
 import QR_Code from '../View/QRCode';
+import Scanner from '../View/Scanner';
+import Friend from '../View/friendRequest';
 import Auth from '../service/Auth';
 
 const Stack = createNativeStackNavigator();
@@ -25,6 +27,10 @@ const LoginStack = () => {
             <Stack.Screen name='Search' component={AddChat}></Stack.Screen>
             <Stack.Screen name='ChatRoom' component={ChatRoom}></Stack.Screen>
             <Stack.Screen name='QR_Code' component={QR_Code}></Stack.Screen>
+            <Stack.Screen name='Scanner' component={Scanner}></Stack.Screen>
+            <Stack.Screen name='Friends' component={Friend}></Stack.Screen>
+            
+            
             
         </Stack.Navigator>
     )
@@ -44,6 +50,9 @@ const HomeStack = () => {
             <Stack.Screen name='Search' component={AddChat}></Stack.Screen>
             <Stack.Screen name='ChatRoom' component={ChatRoom}></Stack.Screen>
             <Stack.Screen name='QR_Code' component={QR_Code}></Stack.Screen>
+            <Stack.Screen name='Scanner' component={Scanner}></Stack.Screen>
+            <Stack.Screen name='Friends' component={Friend}></Stack.Screen>
+            
         </Stack.Navigator>
     )
 }

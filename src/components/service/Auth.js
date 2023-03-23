@@ -23,8 +23,6 @@ const setAccount = async(data) => {
 
 const logout = async() => {
     await AsyncStorage.removeItem("account")
-    await AsyncStorage.setItem("login", "Login")
-
 }
 
 

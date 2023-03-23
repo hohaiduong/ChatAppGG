@@ -31,12 +31,18 @@ const HomeChat = () => {
             <View style= {styles.viewTitle}>
                 <Text style={styles.TextTitle}>Messages</Text>
                 <View style={{flexDirection: "row"}}>
+                <TouchableOpacity onPress={ () => navigation.navigate("QR_Code", {photoUser: photoUser, nameUser: nameUser, email: email, id: idUser})}>
+                    <Ionicons name="qr-code-outline" style={styles.settingIcon}></Ionicons>
+                </TouchableOpacity>
+                
+                <TouchableOpacity onPress={ () => navigation.navigate("Scanner", {photoUser: photoUser, nameUser: nameUser, email: email, id: idUser})}>
+                    <Ionicons name="scan-outline" style={styles.settingIcon}></Ionicons>
+                </TouchableOpacity>
+                
                 <TouchableOpacity onPress={ () => [Auth.logout(), navigation.replace("Login")]}>
                     <Ionicons name="log-out-outline" style={styles.settingIcon}></Ionicons>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={ () => navigation.navigate("QR_Code", {photoUser: photoUser, nameUser: nameUser, email: email})}>
-                    <Ionicons name="qr-code-outline" style={styles.settingIcon}></Ionicons>
-                </TouchableOpacity>
+               
                 </View>
             </View>
         )
@@ -100,7 +106,7 @@ const HomeChat = () => {
                 <TouchableOpacity
                     style={styles.addChat}
                     onPress={() => {
-                        navigation.navigate("Search",
+                        navigation.navigate("Friends",
                             {
                                 id: idUser,
                                 nameUser: nameUser,

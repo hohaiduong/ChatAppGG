@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
     settingIcon: {
         color: "black",
         fontSize: 25,
+        marginLeft: 10
     },
     safeView: {
         backgroundColor: "#fff",
