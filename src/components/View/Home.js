@@ -30,9 +30,14 @@ const HomeChat = () => {
         headerTitle: () => (
             <View style= {styles.viewTitle}>
                 <Text style={styles.TextTitle}>Messages</Text>
+                <View style={{flexDirection: "row"}}>
                 <TouchableOpacity onPress={ () => [Auth.logout(), navigation.replace("Login")]}>
                     <Ionicons name="log-out-outline" style={styles.settingIcon}></Ionicons>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={ () => navigation.navigate("QR_Code", {photoUser: photoUser, nameUser: nameUser, email: email})}>
+                    <Ionicons name="qr-code-outline" style={styles.settingIcon}></Ionicons>
+                </TouchableOpacity>
+                </View>
             </View>
         )
     })
