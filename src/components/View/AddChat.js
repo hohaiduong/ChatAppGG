@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
     View, Text, SafeAreaView, TextInput, FlatList,
-    StyleSheet, TouchableOpacity, Image,
-    Dimensions
+     TouchableOpacity, Image,
 } from 'react-native';
-import { v4 as uuidv4 } from 'uuid';
 import { useNavigation } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -95,7 +93,6 @@ const AddChat = ({ route }) => {
                     name="search"
                     size={20}
                     color="#666"
-                // style={styles.icon}
                 />
                 <TextInput
 
@@ -103,13 +100,7 @@ const AddChat = ({ route }) => {
                     onChangeText={val => SearchUser(val)}
                     value={search}
                     keyboardType="email-address"
-                //   style={styles.textInput}
                 />
-                {/* <View style={styles.viewCancel}>
-                    <TouchableOpacity onPress={() => {navigation.goBack()}}>
-                        <Text style={styles.textCancel}>Cancel</Text>
-                    </TouchableOpacity>
-                </View> */}
             </View>
             <View>
                 <FlatList

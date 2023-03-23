@@ -7,9 +7,9 @@ import ScreenLogin from '../View/loginScreen';
 import HomeChat from '../View/Home';
 import AddChat from '../View/AddChat';
 import ChatRoom from '../View/ChatRoom';
+import QR_Code from '../View/QRCode';
 import Auth from '../service/Auth';
-import { NavigationContainer } from '@react-navigation/native';
-// import { Image } from 'react-native/Libraries/Image/Image';
+
 const Stack = createNativeStackNavigator();
 
 const LoginStack = () => {
@@ -24,6 +24,8 @@ const LoginStack = () => {
             <Stack.Screen name='Home' component={HomeChat} />
             <Stack.Screen name='Search' component={AddChat}></Stack.Screen>
             <Stack.Screen name='ChatRoom' component={ChatRoom}></Stack.Screen>
+            <Stack.Screen name='QR_Code' component={QR_Code}></Stack.Screen>
+            
         </Stack.Navigator>
     )
 }
@@ -41,6 +43,7 @@ const HomeStack = () => {
             <Stack.Screen name='Login' component={ScreenLogin} />
             <Stack.Screen name='Search' component={AddChat}></Stack.Screen>
             <Stack.Screen name='ChatRoom' component={ChatRoom}></Stack.Screen>
+            <Stack.Screen name='QR_Code' component={QR_Code}></Stack.Screen>
         </Stack.Navigator>
     )
 }
@@ -56,7 +59,7 @@ const StackNavigation = () => {
         if (login != null) {
             await Auth.setAccount(login)
             setLogin(false)
-        }else{
+        } else {
             setLogin(true)
         }
     }
@@ -66,7 +69,6 @@ const StackNavigation = () => {
             {Login ?
                 <Stack.Screen name="LoginStack" component={LoginStack} options={{ headerShown: false }} /> :
                 <Stack.Screen name="HomeStack" component={HomeStack} options={{ headerShown: false }} />
-
             }
         </Stack.Navigator>
     )
