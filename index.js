@@ -23,4 +23,5 @@ class Main extends Component {
     }
 
 }
+
 AppRegistry.registerComponent(appName, () => Main);

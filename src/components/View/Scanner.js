@@ -6,6 +6,7 @@ const Scanner = ({ route }) => {
 
     const friendsRequest = (data) => {
         let myData = {
+            id: id,
             photo: photoUser,
             name: nameUser,
         }
@@ -19,6 +20,7 @@ const Scanner = ({ route }) => {
     return (
         <QRCodeScanner
             reactivate={true}
+            reactivateTimeout={5000}
             onRead={({ data }) => {
                 friendsRequest(data)
                 console.log(data);
