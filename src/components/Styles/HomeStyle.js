@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         height: height
     },
     viewChatList: {
-        height:height - 100
+        height:height - 110
     },
     iconAdd: {
         color: "#FFF"

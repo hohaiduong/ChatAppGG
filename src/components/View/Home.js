@@ -95,7 +95,7 @@ const HomeChat = () => {
     }
     return (
         <SafeAreaView style={styles.safeView}>
-            <View style={styles.viewChatList}>
+            <View style={[styles.viewChatList, {borderColor: "black", borderWidth: 1}]}>
                 <FlatList
                     data={dataList}
                     renderItem={ItemList}
