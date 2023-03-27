@@ -45,7 +45,9 @@ const ScreenLogin = () => {
       .set(data)
       .then(()=> {
       console.log("Succesful"),
-      navigation.replace("Home")}
+      navigation.replace("Home")
+      }
+      
       );
       
     } catch (error) {
@@ -80,7 +82,7 @@ const ScreenLogin = () => {
             size={GoogleSigninButton.Size.Wide}
             color={GoogleSigninButton.Color.Dark}
             onPress={() =>
-              signIn()
+              {signIn()}
             } />
         </View>
       </TouchableWithoutFeedback>
