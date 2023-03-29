@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 // import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { View, Text, Image, Dimensions } from 'react-native';
 
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import ScreenLogin from '../View/loginScreen';
 import HomeChat from '../View/Home';
 import AddChat from '../View/AddChat';
@@ -11,7 +13,7 @@ import QR_Code from '../View/QRCode';
 import Scanner from '../View/Scanner';
 import Friend from '../View/friendRequest';
 import Auth from '../service/Auth';
-
+import Drawer from '../View/Drawer';
 const Stack = createNativeStackNavigator();
 
 const LoginStack = () => {
@@ -29,9 +31,6 @@ const LoginStack = () => {
             <Stack.Screen name='QR_Code' component={QR_Code}></Stack.Screen>
             <Stack.Screen name='Scanner' component={Scanner}></Stack.Screen>
             <Stack.Screen name='Friends' component={Friend}></Stack.Screen>
-            
-            
-            
         </Stack.Navigator>
     )
 }
@@ -39,20 +38,15 @@ const LoginStack = () => {
 
 const HomeStack = () => {
     return (
-        <Stack.Navigator screenOptions={{
-            headerStyle: {
-                height: 150,
-                backgroundColor: "#F8D548"
-            }
-        }}>
-            <Stack.Screen name='Home' component={HomeChat} />
-            <Stack.Screen name='Login' component={ScreenLogin} />
-            <Stack.Screen name='Search' component={AddChat}></Stack.Screen>
-            <Stack.Screen name='ChatRoom' component={ChatRoom}></Stack.Screen>
-            <Stack.Screen name='QR_Code' component={QR_Code}></Stack.Screen>
-            <Stack.Screen name='Scanner' component={Scanner}></Stack.Screen>
-            <Stack.Screen name='Friends' component={Friend}></Stack.Screen>
-            
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name='Home' component={Drawer} />
+            <Stack.Screen name='Login' component={ScreenLogin}/>
+            <Stack.Screen name='Search' component={AddChat}/>
+            <Stack.Screen name='ChatRoom' component={ChatRoom}/>
+            <Stack.Screen name='QR_Code' component={QR_Code}/>
+            <Stack.Screen name='Scanner' component={Scanner}/>
+            <Stack.Screen name='Friends' component={Friend}/>
+
         </Stack.Navigator>
     )
 }

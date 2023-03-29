@@ -34,6 +34,10 @@ target 'ChatAppGG' do
   pod 'FirebaseCore', :modular_headers => true
   pod 'GoogleSignIn'
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways/Permission-LocationAlways.podspec"
+  pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse/Permission-LocationWhenInUse.podspec"
   use_react_native!(
     :path => config[:reactNativePath],
     # Hermes is now enabled by default. Disable by setting this flag to false.

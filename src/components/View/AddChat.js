@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Styles/AddChatStyle';
+import 'react-native-gesture-handler';
+
 
 const AddChat = ({ route }) => {
     var { id, nameUser, photo } = route.params;

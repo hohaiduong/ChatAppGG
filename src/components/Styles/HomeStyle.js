@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
     viewTitle: {
         flexDirection: "row",
         justifyContent: "space-between",
-        width: width - 40
+        width: width - 90
     },
     TextTitle: {
         marginLeft: 10,
@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
     settingIcon: {
         color: "black",
         fontSize: 25,
-        marginLeft: 10
     },
     safeView: {
         backgroundColor: "#fff",

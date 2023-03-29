@@ -27,42 +27,42 @@ import { height, width } from '../Util/Constant';
 
 const ChatRoom = ({ route }) => {
 
-    useEffect(() => {
-        getLocation()
-        TEst.getIDMess()
-    }, [])
+    // useEffect(() => {
+    //     // getLocation()
+    //     TEst.getIDMess()
+    // }, [])
     const StickerInit = {
         app_name: 'ChatApp', //--> Your app name that can tag on copyright text and many more place.... //--> false if your are not using custom sticker
     }
 
     AnimatedStickerChz.InitialApp(StickerInit)
 
-    const getLocation = () => {
-        GetLocation.getCurrentPosition({
-            enableHighAccuracy: true,
-            timeout: 60000,
-        })
-            .then(location => {
-                setLocation(location)
-            })
-            .catch(err => {
-                const { code, message } = err;
-                console.warn(code, message);
-            })
-    }
+    // const getLocation = () => {
+    //     GetLocation.getCurrentPosition({
+    //         enableHighAccuracy: true,
+    //         timeout: 60000,
+    //     })
+    //         .then(location => {
+    //             setLocation(location)
+    //         })
+    //         .catch(err => {
+    //             const { code, message } = err;
+    //             console.warn(code, message);
+    //         })
+    // }
     
-    useEffect (() => {
-        const interval = setInterval(() => {
-            getLocation()
-            TEst.getIDMess()
-            TEst.getData();
-            database().ref('/messages/' + roomID + '/' + TEst.getIDMess())
-            .update({
-                msg: location
-            })
-        }, 1000);
-        return () => clearInterval(interval)
-    })
+    // useEffect (() => {
+    //     const interval = setInterval(() => {
+    //         getLocation()
+    //         TEst.getIDMess()
+    //         TEst.getData();
+    //         database().ref('/messages/' + roomID + '/' + TEst.getIDMess())
+    //         .update({
+    //             msg: location
+    //         })
+    //     }, 1000);
+    //     return () => clearInterval(interval)
+    // })
 
     const idUser = route.params.idUser;
     const idClient = route.params.idClient;
@@ -70,7 +70,7 @@ const ChatRoom = ({ route }) => {
     const nameClient = route.params.nameClient;
     const photoClient = route.params.photoClient;
 
-    const [mess, setMess] = useState("");
+    const [mess, setMessages] = useState("");
 
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
     const [vis, setVis] = useState(false)
@@ -140,7 +140,7 @@ const ChatRoom = ({ route }) => {
                         <TextInput
                             style={styles.input}
                             value={mess}
-                            onChangeText={setMess}
+                            onChangeText={setMessages} 
                             placeholder="Type your message..."
                         />
                         <Pressable onPress={() => ImageMessages.openImageLib(roomID, idUser, idClient)}>
@@ -161,8 +161,8 @@ const ChatRoom = ({ route }) => {
                         </Pressable>
                     </View>
 
-                    <Pressable onPress={() => {
-                        mess ? [sendMSG(), setMess(""), setIsEmojiPickerOpen(false), Keyboard.dismiss()]
+                    {/* <Pressable onPress={() => {
+                        mess ? [sendMSG(), setIsEmojiPickerOpen(false), Keyboard.dismiss()]
                             :
                             ImageMessages.openCamera(roomID, idUser, idClient)
                     }} style={styles.buttonContainer}>
@@ -171,18 +171,18 @@ const ChatRoom = ({ route }) => {
                         ) : (
                             <Ionicons name="camera-outline" size={24} color="#fff" />
                         )}
-                    </Pressable>
+                    </Pressable> */}
                 </View>
 
-                {isEmojiPickerOpen && (
+                {/* {isEmojiPickerOpen && (
                     <EmojiSelector
                         onEmojiSelected={emoji =>
-                            setMess(currentMessage => currentMessage + emoji)
+                            setMessages(currentMessage => currentMessage + emoji)
                         }
                         columns={8}
                         showSearchBar={false}
                     />
-                )}
+                )} */}
                 <KeyBoardSticker
                     roomID={roomID} idUser={idUser} idClient={idClient} getVis={vis} />
 

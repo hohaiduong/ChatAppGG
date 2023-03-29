@@ -7,6 +7,7 @@ import { Component } from 'react';
 import Splash from './src/components/assets/splash/Splash';
 import App from './App';
 import {name as appName} from './app.json';
+import 'react-native-gesture-handler';
 
 class Main extends Component {
     constructor(props) {

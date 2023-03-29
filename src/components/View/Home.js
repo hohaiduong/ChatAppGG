@@ -8,6 +8,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import Auth from '../service/Auth';
 import styles from '../Styles/HomeStyle';
+import 'react-native-gesture-handler';
+
 const HomeChat = () => {
     const [data, setData] = useState([]);
     useEffect(() => {
@@ -23,7 +25,6 @@ const HomeChat = () => {
     var photoUser = data.photo;
     var nameUser = data.name;
     var email = data.email;
-    const [checkUser, setCheckUser] = useState(false);
     const [dataList, setDataList] = useState([]);
     const navigation = useNavigation();
     navigation.setOptions({
@@ -31,21 +32,12 @@ const HomeChat = () => {
             <View style= {styles.viewTitle}>
                 <Text style={styles.TextTitle}>Messages</Text>
                 <View style={{flexDirection: "row"}}>
-                <TouchableOpacity onPress={ () => navigation.navigate("QR_Code", {photoUser: photoUser, nameUser: nameUser, email: email, id: idUser})}>
-                    <Ionicons name="qr-code-outline" style={styles.settingIcon}></Ionicons>
-                </TouchableOpacity>
-                
-                <TouchableOpacity onPress={ () => navigation.navigate("Scanner", {photoUser: photoUser, nameUser: nameUser, email: email, id: idUser})}>
-                    <Ionicons name="scan-outline" style={styles.settingIcon}></Ionicons>
-                </TouchableOpacity>
-                
                 <TouchableOpacity onPress={ () => [Auth.logout(), navigation.replace("Login")]}>
                     <Ionicons name="log-out-outline" style={styles.settingIcon}></Ionicons>
                 </TouchableOpacity>
-               
                 </View>
             </View>
-        )
+        ),
     })
     const getChatList = async () => {
         database()
@@ -95,7 +87,7 @@ const HomeChat = () => {
     }
     return (
         <SafeAreaView style={styles.safeView}>
-            <View style={[styles.viewChatList, {borderColor: "black", borderWidth: 1}]}>
+            <View style={styles.viewChatList}>
                 <FlatList
                     data={dataList}
                     renderItem={ItemList}
