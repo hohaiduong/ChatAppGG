@@ -8,6 +8,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import Auth from '../service/Auth';
 import styles from '../Styles/HomeStyle';
+import 'react-native-gesture-handler';
+
 const HomeChat = () => {
     var [data, setData] = useState([]);
     useEffect(() => {
@@ -26,18 +28,19 @@ const HomeChat = () => {
     var photoUser = data.photo;
     var nameUser = data.name;
     var email = data.email;
-    const [checkUser, setCheckUser] = useState(false);
     const [dataList, setDataList] = useState([]);
     const navigation = useNavigation();
     navigation.setOptions({
         headerTitle: () => (
             <View style= {styles.viewTitle}>
                 <Text style={styles.TextTitle}>Messages</Text>
+                <View style={{flexDirection: "row"}}>
                 <TouchableOpacity onPress={ () => [Auth.logout(), navigation.replace("Login")]}>
                     <Ionicons name="log-out-outline" style={styles.settingIcon}></Ionicons>
                 </TouchableOpacity>
+                </View>
             </View>
-        )
+        ),
     })
     const getChatList = async () => {
         database()
@@ -98,7 +101,7 @@ const HomeChat = () => {
                 <TouchableOpacity
                     style={styles.addChat}
                     onPress={() => {
-                        navigation.navigate("Search",
+                        navigation.navigate("Friends",
                             {
                                 id: idUser,
                                 nameUser: nameUser,

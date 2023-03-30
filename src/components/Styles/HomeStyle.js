@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
     viewTitle: {
         flexDirection: "row",
         justifyContent: "space-between",
-        width: width - 40
+        width: width - 90
     },
     TextTitle: {
         marginLeft: 10,
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
         height: height
     },
     viewChatList: {
-        height:height - 100
+        height:height - 110
     },
     iconAdd: {
         color: "#FFF"

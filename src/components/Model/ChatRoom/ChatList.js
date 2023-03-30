@@ -10,7 +10,6 @@ import TEst from '../../View/TEst';
 
 const ListChat = ({ roomID, idUser }) => {
     var [allChat, setAllChat] = useState([]);
-
     useEffect(() => {
         const onChildAdd = database()
             .ref('/messages/' + roomID)
@@ -73,7 +72,6 @@ const ListChat = ({ roomID, idUser }) => {
                                                 <Text style={{ color: "white" }}>Đã chia sẻ vị trí</Text>
                                                 <Pressable onPress={() => {
                                                     TEst.setIDMess(item.id)
-                                                    
                                                 }}
                                                     style={{ backgroundColor: "wheat", borderRadius: 25, alignItems: "center", marginTop: 5 }}
                                                 >

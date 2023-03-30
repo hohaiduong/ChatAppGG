@@ -1,5 +1,6 @@
 import { View, Text } from 'react-native'
 import React, { useState, useEffect } from 'react'
+import React, {useState, useEffect}from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeChat from './Home';
 import Scanner from './Scanner';
@@ -15,11 +16,17 @@ export default function Drawer() {
     var [data, setData] = useState([]);
     useEffect(() => {
         data
+export default function Drawer({route}) {
+    const Drawer = createDrawerNavigator();
+    const navigation = useNavigation()
+    const [data, setData] = useState([]);
+    useEffect(() => {
         getUser()
     }, [data])
     const getUser = async () => {
         setData(await Auth.getAccount());
     }
+    const id = data.id
     return (
         <Drawer.Navigator screenOptions={{
             headerStyle: {

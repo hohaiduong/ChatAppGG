@@ -3,7 +3,6 @@ import database from '@react-native-firebase/database';
 import { Alert } from 'react-native'
 const Scanner = ({ route }) => {
     const { id, name, email, photo } = route.params;
-
     const friendsRequest = (data) => {
         let myData = {
             id: id,

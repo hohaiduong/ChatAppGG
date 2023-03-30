@@ -2,14 +2,18 @@ import React, { useEffect, useState } from 'react';
 // import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { View, Text, Image, Dimensions } from 'react-native';
 
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import ScreenLogin from '../View/loginScreen';
 import HomeChat from '../View/Home';
 import AddChat from '../View/AddChat';
 import ChatRoom from '../View/ChatRoom';
+import QR_Code from '../View/QRCode';
+import Scanner from '../View/Scanner';
+import Friend from '../View/friendRequest';
 import Auth from '../service/Auth';
-import { NavigationContainer } from '@react-navigation/native';
-// import { Image } from 'react-native/Libraries/Image/Image';
+import Drawer from '../View/Drawer';
 const Stack = createNativeStackNavigator();
 
 const LoginStack = () => {
@@ -46,7 +50,6 @@ const HomeStack = () => {
             <Stack.Screen name='Friends' component={Friend} options={{headerShown: true,    headerStyle: {
                 backgroundColor: "#F8D548"}
         }}/>
-
         </Stack.Navigator>
     )
 }
@@ -62,7 +65,7 @@ const StackNavigation = () => {
         if (login != null) {
             await Auth.setAccount(login)
             setLogin(false)
-        }else{
+        } else {
             setLogin(true)
         }
     }
@@ -72,7 +75,6 @@ const StackNavigation = () => {
             {Login ?
                 <Stack.Screen name="LoginStack" component={LoginStack} options={{ headerShown: false }} /> :
                 <Stack.Screen name="HomeStack" component={HomeStack} options={{ headerShown: false }} />
-
             }
         </Stack.Navigator>
     )

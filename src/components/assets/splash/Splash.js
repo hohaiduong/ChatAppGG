@@ -10,7 +10,7 @@ const Splash = () => {
         hidden={false}
         backgroundColor="rgb(32, 53, 70)"
       />
-      {/* <Image style={styles.img} source={require('../../assets/img/bgTodoList.jpg')}/> */}
+      
       <View style={styles.textForm}>
         <Text style={styles.textTitle}>Chatty</Text>
         <Text style={styles.textDescription}>
