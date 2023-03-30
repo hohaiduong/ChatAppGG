@@ -9,9 +9,7 @@ import styles from '../../Styles/ChatRoomStyle';
 import TEst from '../../View/TEst';
 
 const ListChat = ({ roomID, idUser }) => {
-    var [idMess, setIDMess] = useState("")
-    const [allChat, setAllChat] = useState([]);
-
+    var [allChat, setAllChat] = useState([]);
     useEffect(() => {
         const onChildAdd = database()
             .ref('/messages/' + roomID)
@@ -74,7 +72,6 @@ const ListChat = ({ roomID, idUser }) => {
                                                 <Text style={{ color: "white" }}>Đã chia sẻ vị trí</Text>
                                                 <Pressable onPress={() => {
                                                     TEst.setIDMess(item.id)
-                                                    // setIDMess(item.id)
                                                 }}
                                                     style={{ backgroundColor: "wheat", borderRadius: 25, alignItems: "center", marginTop: 5 }}
                                                 >
@@ -97,7 +94,9 @@ const ListChat = ({ roomID, idUser }) => {
             database()
                 .ref('/messages/' + roomID + '/' + TEst.getIDMess())
                 .on('value', snapshot => {
+                    if(snapshot.val() != null){
                     TEst.setData(snapshot.val().msg)
+                    }
                 });
         }, 1000)
         return () => clearInterval(interval)

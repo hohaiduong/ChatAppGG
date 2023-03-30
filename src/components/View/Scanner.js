@@ -2,13 +2,12 @@ import QRCodeScanner from "react-native-qrcode-scanner"
 import database from '@react-native-firebase/database';
 import { Alert } from 'react-native'
 const Scanner = ({ route }) => {
-    const { id, nameUser, email, photoUser } = route.params;
-
+    const { id, name, email, photo } = route.params;
     const friendsRequest = (data) => {
         let myData = {
             id: id,
-            photo: photoUser,
-            name: nameUser,
+            photo: photo,
+            name: name,
         }
         database()
             .ref('/friendsRequest/' + data + "/" + id)
@@ -23,7 +22,6 @@ const Scanner = ({ route }) => {
             reactivateTimeout={5000}
             onRead={({ data }) => {
                 friendsRequest(data)
-                console.log(data);
             }}
         />
     )
