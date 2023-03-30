@@ -21,9 +21,12 @@ const LoginStack = () => {
             }
         }}>
             <Stack.Screen name='Login' component={ScreenLogin} />
-            <Stack.Screen name='Home' component={HomeChat} />
+            <Stack.Screen name='Home' component={Drawer} />
             <Stack.Screen name='Search' component={AddChat}></Stack.Screen>
-            <Stack.Screen name='ChatRoom' component={ChatRoom}></Stack.Screen>
+            <Stack.Screen name='ChatRoom' component={ChatRoom} options={{headerShown: true}}></Stack.Screen>
+            <Stack.Screen name='QR_Code' component={QR_Code}></Stack.Screen>
+            <Stack.Screen name='Scanner' component={Scanner}></Stack.Screen>
+            <Stack.Screen name='Friends' component={Friend}></Stack.Screen>
         </Stack.Navigator>
     )
 }
@@ -31,16 +34,19 @@ const LoginStack = () => {
 
 const HomeStack = () => {
     return (
-        <Stack.Navigator screenOptions={{
-            headerStyle: {
-                height: 150,
-                backgroundColor: "#F8D548"
-            }
-        }}>
-            <Stack.Screen name='Home' component={HomeChat} />
-            <Stack.Screen name='Login' component={ScreenLogin} />
-            <Stack.Screen name='Search' component={AddChat}></Stack.Screen>
-            <Stack.Screen name='ChatRoom' component={ChatRoom}></Stack.Screen>
+        <Stack.Navigator screenOptions={{headerShown: false}} >
+            <Stack.Screen name='Home' component={Drawer} />
+            <Stack.Screen name='Login' component={ScreenLogin}/>
+            <Stack.Screen name='Search' component={AddChat}/>
+            <Stack.Screen name='ChatRoom' component={ChatRoom} options={{headerShown: true,    headerStyle: {
+                backgroundColor: "#F8D548"}
+        }}/>
+            <Stack.Screen name='QR_Code' component={QR_Code}/>
+            <Stack.Screen name='Scanner' component={Scanner}/>
+            <Stack.Screen name='Friends' component={Friend} options={{headerShown: true,    headerStyle: {
+                backgroundColor: "#F8D548"}
+        }}/>
+
         </Stack.Navigator>
     )
 }

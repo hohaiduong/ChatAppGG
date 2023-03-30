@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef} from 'react';
 import {
     View, Text, Image, SafeAreaView, StyleSheet,
     Dimensions, FlatList, TouchableOpacity
@@ -9,8 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import Auth from '../service/Auth';
 import styles from '../Styles/HomeStyle';
 const HomeChat = () => {
-    const [data, setData] = useState([]);
+    var [data, setData] = useState([]);
     useEffect(() => {
+        data
         getUser()
         getChatList()
     }, [data])
@@ -18,7 +19,9 @@ const HomeChat = () => {
     const getUser = async () => {
         setData(await Auth.getAccount());
     }
-    
+    const timeout = useRef();
+    useEffect(() => () => clearTimeout(timeout.current), []);
+
     var idUser = data.id;
     var photoUser = data.photo;
     var nameUser = data.name;

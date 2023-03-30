@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     Button,
     Text, View, TextInput, Pressable, FlatList, SafeAreaView, Keyboard,
@@ -26,6 +26,7 @@ const ChatRoom = ({ route }) => {
     }
 
     AnimatedStickerChz.InitialApp(StickerInit)
+    const [location, setLocation] = useState([])
 
     const idUser = route.params.idUser;
     const idClient = route.params.idClient;
