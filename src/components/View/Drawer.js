@@ -9,6 +9,15 @@ import CustomDrawer from './Custom';
 import Auth from '../service/Auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+<<<<<<< UpdateDrawer
+=======
+export default function Drawer() {
+    const Drawer = createDrawerNavigator();
+    const navigation = useNavigation()
+    var [data, setData] = useState([]);
+    useEffect(() => {
+        data
+>>>>>>> main
 export default function Drawer({route}) {
     const Drawer = createDrawerNavigator();
     const navigation = useNavigation()
