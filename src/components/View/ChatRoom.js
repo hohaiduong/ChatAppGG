@@ -37,32 +37,34 @@ const ChatRoom = ({ route }) => {
 
     AnimatedStickerChz.InitialApp(StickerInit)
 
-    // const getLocation = () => {
-    //     GetLocation.getCurrentPosition({
-    //         enableHighAccuracy: true,
-    //         timeout: 60000,
-    //     })
-    //         .then(location => {
-    //             setLocation(location)
-    //         })
-    //         .catch(err => {
-    //             const { code, message } = err;
-    //             console.warn(code, message);
-    //         })
-    // }
+    const getLocation = () => {
+        GetLocation.getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 60000,
+        })
+            .then(location => {
+                setLocation(location)
+            })
+            .catch(err => {
+                const { code, message } = err;
+                console.warn(code, message);
+            })
+    }
     
-    // useEffect (() => {
-    //     const interval = setInterval(() => {
-    //         getLocation()
-    //         TEst.getIDMess()
-    //         TEst.getData();
-    //         database().ref('/messages/' + roomID + '/' + TEst.getIDMess())
-    //         .update({
-    //             msg: location
-    //         })
-    //     }, 1000);
-    //     return () => clearInterval(interval)
-    // })
+    useEffect (() => {
+        const interval = setInterval(() => {
+            TEst.getIDMess()
+            TEst.getData();
+            if(TEst.getIDMess() != ""){
+            getLocation()
+            database().ref('/messages/' + roomID + '/' + TEst.getIDMess())
+            .update({
+                msg: location
+            })
+        }
+        }, 1000);
+        return () => clearInterval(interval)
+    })
 
     const idUser = route.params.idUser;
     const idClient = route.params.idClient;
@@ -161,7 +163,7 @@ const ChatRoom = ({ route }) => {
                         </Pressable>
                     </View>
 
-                    {/* <Pressable onPress={() => {
+                    <Pressable onPress={() => {
                         mess ? [sendMSG(), setIsEmojiPickerOpen(false), Keyboard.dismiss()]
                             :
                             ImageMessages.openCamera(roomID, idUser, idClient)
@@ -171,10 +173,10 @@ const ChatRoom = ({ route }) => {
                         ) : (
                             <Ionicons name="camera-outline" size={24} color="#fff" />
                         )}
-                    </Pressable> */}
+                    </Pressable>
                 </View>
 
-                {/* {isEmojiPickerOpen && (
+                {isEmojiPickerOpen && (
                     <EmojiSelector
                         onEmojiSelected={emoji =>
                             setMessages(currentMessage => currentMessage + emoji)
@@ -182,7 +184,7 @@ const ChatRoom = ({ route }) => {
                         columns={8}
                         showSearchBar={false}
                     />
-                )} */}
+                )}
                 <KeyBoardSticker
                     roomID={roomID} idUser={idUser} idClient={idClient} getVis={vis} />
 

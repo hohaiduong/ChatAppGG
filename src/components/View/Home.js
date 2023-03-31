@@ -27,18 +27,6 @@ const HomeChat = () => {
     var email = data.email;
     const [dataList, setDataList] = useState([]);
     const navigation = useNavigation();
-    navigation.setOptions({
-        headerTitle: () => (
-            <View style= {styles.viewTitle}>
-                <Text style={styles.TextTitle}>Messages</Text>
-                <View style={{flexDirection: "row"}}>
-                <TouchableOpacity onPress={ () => [Auth.logout(), navigation.replace("Login")]}>
-                    <Ionicons name="log-out-outline" style={styles.settingIcon}></Ionicons>
-                </TouchableOpacity>
-                </View>
-            </View>
-        ),
-    })
     const getChatList = async () => {
         database()
             .ref('/chatlist/' + idUser)
@@ -55,7 +43,6 @@ const HomeChat = () => {
         const Name = item.name;
         const lastMSG = item.lastMSG;
         const roomID = item.roomID;
-
         return (
             <SafeAreaView>
                 <TouchableOpacity onPress={() => {
@@ -98,7 +85,7 @@ const HomeChat = () => {
                 <TouchableOpacity
                     style={styles.addChat}
                     onPress={() => {
-                        navigation.navigate("Friends",
+                        navigation.navigate("Search",
                             {
                                 id: idUser,
                                 nameUser: nameUser,
