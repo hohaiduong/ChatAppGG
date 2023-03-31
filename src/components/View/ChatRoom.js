@@ -36,6 +36,7 @@ const ChatRoom = ({ route }) => {
     }
 
     AnimatedStickerChz.InitialApp(StickerInit)
+    const [location, setLocation] = useState([])
 
     const getLocation = () => {
         GetLocation.getCurrentPosition({

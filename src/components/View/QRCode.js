@@ -5,12 +5,12 @@ import QRCode from 'react-native-qrcode-svg'
 import { width, height } from '../Util/Constant'
 import { useNavigation } from '@react-navigation/native'
 const QR_Code = ({ route }) => {
-    const { id, photoUser } = route.params;
+    const { id, photo } = route.params;
     return (
         <SafeAreaView style={{ alignSelf: "center", alignItems: "center", justifyContent: "center", height: height - 70 }}>
             <QRCode
                 size={250}
-                logo={{ uri: photoUser }}
+                logo={{ uri: photo }}
                 value={id}
             />
         </SafeAreaView>

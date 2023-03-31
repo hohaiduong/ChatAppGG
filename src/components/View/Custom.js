@@ -1,19 +1,11 @@
-import { View, Text, Image, SafeAreaView } from 'react-native'
+
+import { View, Text, Image, SafeAreaView, ImageBackground } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer'
 import { useNavigation } from '@react-navigation/native'
 import Auth from '../service/Auth'
 const CustomDrawer = (props) => {
-  const navigation = useNavigation()
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    getUser()
-  }, [data])
-
-  const getUser = async () => {
-    setData(await Auth.getAccount());
-  };
-
+  const navigation = useNavigation()  
   return (
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props} contentContainerStyle={{ backgroundColor: "#ad40af" }}>
