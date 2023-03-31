@@ -5,14 +5,15 @@ import { DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navi
 import { useNavigation } from '@react-navigation/native'
 import Auth from '../service/Auth'
 const CustomDrawer = (props) => {
-  const navigation = useNavigation()
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    getUser()
-  }, [data])
-  const getUser = async () => {
-    setData(await Auth.getAccount());
-  }
+  const navigation = useNavigation()  
+  var [data, setData] = useState([]);
+    useEffect(() => {
+        data
+        getUser()
+    }, [data])
+    const getUser = async () => {
+        setData(await Auth.getAccount());
+    }
   return (
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props} contentContainerStyle={{ backgroundColor: "#ad40af" }}>

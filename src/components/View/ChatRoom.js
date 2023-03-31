@@ -54,10 +54,10 @@ const ChatRoom = ({ route }) => {
     
     useEffect (() => {
         const interval = setInterval(() => {
+            getLocation()
             TEst.getIDMess()
             TEst.getData();
             if(TEst.getIDMess() != ""){
-            getLocation()
             database().ref('/messages/' + roomID + '/' + TEst.getIDMess())
             .update({
                 msg: location
@@ -80,9 +80,6 @@ const ChatRoom = ({ route }) => {
     const [showMap, setShowMap] = useState(false)
     const [optionsMap, setOptionsMap] = useState(false)
     const [optionMapCancel, setOptionMapCancel] = useState(false)
-
-
-    const [location, setLocation] = useState([])
 
     const navigation = useNavigation();
     navigation.setOptions(
