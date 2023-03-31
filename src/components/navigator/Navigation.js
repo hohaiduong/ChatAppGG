@@ -38,14 +38,30 @@ const LoginStack = () => {
 
 const HomeStack = () => {
     return (
-        <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name='Home' component={Drawer} />
-            <Stack.Screen name='Login' component={ScreenLogin}/>
-            <Stack.Screen name='Search' component={AddChat}/>
-            <Stack.Screen name='ChatRoom' component={ChatRoom}/>
-            <Stack.Screen name='QR_Code' component={QR_Code}/>
-            <Stack.Screen name='Scanner' component={Scanner}/>
-            <Stack.Screen name='Friends' component={Friend}/>
+            <Stack.Screen name='Login' component={ScreenLogin} />
+            <Stack.Screen name='Search' component={AddChat}
+                options={
+                    {
+                        headerShown: true,
+                        headerStyle: { backgroundColor: "#f8d548" }
+                    }}
+            />
+            <Stack.Screen name='ChatRoom' component={ChatRoom}
+                options={
+                    {
+                        headerShown: true,
+                        headerStyle: { backgroundColor: "#f8d548" }
+                    }} />
+            <Stack.Screen name='QR_Code' component={QR_Code} />
+            <Stack.Screen name='Scanner' component={Scanner} />
+            <Stack.Screen name='Friends' component={Friend}
+                options={
+                    {
+                        headerShown: true,
+                        headerStyle: { backgroundColor: "#f8d548" }
+                    }} />
 
         </Stack.Navigator>
     )

@@ -19,6 +19,7 @@ const Scanner = ({ route }) => {
     }
     return (
         <QRCodeScanner
+            showMarker={true}
             reactivate={true}
             reactivateTimeout={5000}
             onRead={({ data }) => {

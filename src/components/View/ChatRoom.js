@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     Button,
     Text, View, TextInput, Pressable, FlatList, SafeAreaView, Keyboard,
@@ -53,10 +53,10 @@ const ChatRoom = ({ route }) => {
     
     useEffect (() => {
         const interval = setInterval(() => {
+            getLocation()
             TEst.getIDMess()
             TEst.getData();
             if(TEst.getIDMess() != ""){
-            getLocation()
             database().ref('/messages/' + roomID + '/' + TEst.getIDMess())
             .update({
                 msg: location
