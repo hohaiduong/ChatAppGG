@@ -81,9 +81,6 @@ const ChatRoom = ({ route }) => {
     const [optionsMap, setOptionsMap] = useState(false)
     const [optionMapCancel, setOptionMapCancel] = useState(false)
 
-
-    const [location, setLocation] = useState([])
-
     const navigation = useNavigation();
     navigation.setOptions(
         {

@@ -6,6 +6,14 @@ import { useNavigation } from '@react-navigation/native'
 import Auth from '../service/Auth'
 const CustomDrawer = (props) => {
   const navigation = useNavigation()  
+  var [data, setData] = useState([]);
+    useEffect(() => {
+        data
+        getUser()
+    }, [data])
+    const getUser = async () => {
+        setData(await Auth.getAccount());
+    }
   return (
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props} contentContainerStyle={{ backgroundColor: "#ad40af" }}>
