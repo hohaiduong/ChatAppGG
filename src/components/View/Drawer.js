@@ -1,6 +1,5 @@
 import { View, Text } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import React, {useState, useEffect}from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeChat from './Home';
 import Scanner from './Scanner';
@@ -10,12 +9,15 @@ import CustomDrawer from './Custom';
 import Auth from '../service/Auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+<<<<<<< UpdateDrawer
+=======
 export default function Drawer() {
     const Drawer = createDrawerNavigator();
     const navigation = useNavigation()
     var [data, setData] = useState([]);
     useEffect(() => {
         data
+>>>>>>> main
 export default function Drawer({route}) {
     const Drawer = createDrawerNavigator();
     const navigation = useNavigation()
@@ -26,7 +28,6 @@ export default function Drawer({route}) {
     const getUser = async () => {
         setData(await Auth.getAccount());
     }
-    const id = data.id
     return (
         <Drawer.Navigator screenOptions={{
             headerStyle: {

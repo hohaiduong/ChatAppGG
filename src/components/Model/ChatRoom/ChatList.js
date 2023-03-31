@@ -91,6 +91,7 @@ const ListChat = ({ roomID, idUser }) => {
     useEffect(() => {
         const interval = setInterval(() => {
             TEst.getIDMess()
+            if(TEst.getIDMess() != ""){
             database()
                 .ref('/messages/' + roomID + '/' + TEst.getIDMess())
                 .on('value', snapshot => {
@@ -98,6 +99,7 @@ const ListChat = ({ roomID, idUser }) => {
                     TEst.setData(snapshot.val().msg)
                     }
                 });
+            }
         }, 1000)
         return () => clearInterval(interval)
     }, [])
